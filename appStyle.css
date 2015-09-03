@@ -1,0 +1,44 @@
+QPushButton {
+    min-width: 16 px;
+    min-height: 20 px;
+    color: white;
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #EE82EE, stop:1 #00FF00);
+    border-radius: 5px;
+}
+/* наводим курсор на кнопки*/
+QPushButton:hover {
+    background: qlineargradient(x1:1, y1:0, x2:0, y2:1, stop:0 #000080, stop:1 #008000);
+    border-style: solid;
+}
+
+QPushButton:pressed {
+    border: 2px solid white;
+    border-radius: 5px;
+}
+
+/* центральный элемент слайдера */
+QSlider::handle:vertical {
+    height: 10px;
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #00FFFF, stop:1 #0000FF);
+    margin: 0 -4px;
+    border-radius: 5px;
+}
+
+QSlider:handle:horizontal {
+    height: 10px;
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #00FFFF, stop:1 #0000FF);
+    margin: 0 -4px;
+    border-radius: 5px;
+}
+
+QLabel {
+    color: white;
+    font-family: "Comic Sans MS";
+}
+
+.SoundPlayer {
+    background: qlineargradient(x1:0, y:0, x2:1, y:0, stop:0 #000000, stop:0.5 #255, stop:1 #000000);
+    border-radius: 10px;
+}
+
+
