@@ -12,6 +12,7 @@ class SoundPlayer: public QWidget {
 public:
     SoundPlayer(QWidget* pwgt=0);
     virtual ~SoundPlayer();
+    void retranslateGUI();
 protected:
     QMediaPlayer* player;
     QVBoxLayout* vbox;
@@ -20,6 +21,7 @@ protected:
     virtual void dropEvent(QDropEvent* pe);
     //событие меню
     virtual void contextMenuEvent(QContextMenuEvent* me);
+    virtual void changeEvent(QEvent* pe);   //событие смены языка
 private:
     QPushButton* btnPlay;
     QPushButton* btnStop;
@@ -41,6 +43,8 @@ private slots:
     void slotMenuActivated(QAction*);
     //слот смены дизайна
     void slotDesignChange(QAction*);
+    //слот смены языка
+    void slotLanguageChange(QAction* );
 };
 
 #endif // WIDGET_H

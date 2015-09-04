@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     a.setStyleSheet(QString(style.readAll()));
     //sound.setWindowFlags(Qt::Window | Qt::FramelessWindowHint);            //базовая фомра окна
 
-    sound.setWindowFlags(Qt::Window| Qt::WindowShadeButtonHint | Qt::WindowDoesNotAcceptFocus);   //для debuga
+    sound.setWindowFlags(Qt::Window| Qt::WindowShadeButtonHint);   //для debuga
 
     sound.setWindowTitle("God's Media");  //устаноить верхнюю надпись окна
     //виджет Option

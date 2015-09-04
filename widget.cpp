@@ -78,7 +78,8 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     //создаем меню
     mainMenu = new QMenu;
     //создание в меню открытия
-    QAction* mOpen = mainMenu->addAction(QObject::tr("&Open"), this, SLOT(slotMenuActivated(QAction*)), Qt::CTRL+Qt::Key_O);
+    QAction* mOpen = mainMenu->addAction(QObject::tr("&Open"));
+    QObject::connect(mainMenu, SIGNAL(triggered(QAction*)), this, SLOT(slotMenuActivated(QAction*)));
     //разделитель
     mainMenu->addSeparator();
     mainMenu->addAction(QObject::tr("&Play"), player, SLOT(play()));
@@ -86,30 +87,45 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     mainMenu->addAction(QObject::tr("&Pause"), player, SLOT(pause()));
     mainMenu->addSeparator();
     //опции
-    QMenu* optionMenu = new QMenu("Option&s", mainMenu);
+    QMenu* optionMenu = new QMenu(QObject::tr("Option&s"), mainMenu);
     mainMenu->addMenu(optionMenu);  //добавим выплывающие опции
     mainMenu->addSeparator();
     //выход
     mainMenu->addAction(QObject::tr("&Exit"), qApp, SLOT(quit()), Qt::CTRL + Qt::Key_E);
 
     //заполняем меню Options
-    QMenu* langMenu = new QMenu("Language", optionMenu);    //настройки языка
+    QMenu* langMenu = new QMenu(QObject::tr("Language"), optionMenu);    //настройки языка
     optionMenu->addMenu(langMenu);
-    QMenu* designMenu = new QMenu("Design", optionMenu);    //настройка дизайна
+    QMenu* designMenu = new QMenu(QObject::tr("Design"), optionMenu);    //настройка дизайна
     optionMenu->addMenu(designMenu);
     //заполняем языковое меню
-    QAction* engAction = langMenu->addAction("English");
-    QAction* rusAction = langMenu->addAction("Russian");
-    QAction* deAction = langMenu->addAction("Germany");
-    QAction* frAction = langMenu->addAction("French");
+    QAction* engAction = langMenu->addAction(QObject::tr("English"));
+    QAction* rusAction = langMenu->addAction(QObject::tr("Russian"));
+    QAction* deAction = langMenu->addAction(QObject::tr("Germany"));
+    langMenu->addAction(QObject::tr("French"));
     //заполняем меню дизайна
-    QAction* defaultAction = designMenu->addAction("Default", this, SLOT(slotDesignChange(QAction*)));
+    QAction* defaultAction = designMenu->addAction(QObject::tr("Default"), this, SLOT(slotDesignChange(QAction*)));
+    QAction* magicAction = designMenu->addAction(QObject::tr("Magic style"), this, SLOT(slotDesignChange(QAction*)));
+    QAction* mnitiAction = designMenu->addAction(QObject::tr("MNITI style"), this, SLOT(slotDesignChange(QAction*)));
+    //соединим слоты для перевода
+    QObject::connect(langMenu, SIGNAL(triggered(QAction*)), this, SLOT(slotLanguageChange(QAction*)));
+    //присвоение имен указателям на объекты меню языка
+    rusAction->setObjectName("Rus");
+    deAction->setObjectName("De");
+
 }
 
 //чистка памятиeeE
 SoundPlayer::~SoundPlayer()
 {
     delete player;
+}
+
+//переводим
+void SoundPlayer::retranslateGUI()
+{
+    fileName->setText(tr("None"));
+    repeatCheck->setText(tr("Repeat "));
 }
 
 //событие попадания перетаскиваемого файла на виджет
@@ -139,6 +155,14 @@ void SoundPlayer::contextMenuEvent(QContextMenuEvent *me)
     mainMenu->exec(me->globalPos());    //открывать меню там, где находится указатель мыши
 }
 
+//событие смены языка
+void SoundPlayer::changeEvent(QEvent *pe)
+{
+    if (pe->type() == QEvent::LanguageChange) {
+        retranslateGUI();
+    }
+}
+
 //переводит милисек в QString
 QString SoundPlayer::msecsToString(int n)
 {
@@ -151,15 +175,18 @@ QString SoundPlayer::msecsToString(int n)
 //управление открытием файлов
 void SoundPlayer::slotOpen()
 {
+    int i=0;
     QString file = QFileDialog::getOpenFileName(this, "Open File");     //вызов файл диалога
     //если файл все-таки открыт
     if (!file.isEmpty()) {
-        player->setMedia(QUrl::fromLocalFile(file));     //загрузить файл в медиа плейер
-        btnPlay->setEnabled(true);
-        btnStop->setEnabled(true);
-        fileName->setText(file);        //показать текущий файл на GUI
-        //начать воспроизведение файла сразу
-        player->play();
+        if ((i = file.indexOf(".mp3"))!=-1 || (i= file.indexOf(".WAV"))!=-1) {
+            player->setMedia(QUrl::fromLocalFile(file));     //загрузить файл в медиа плейер
+            btnPlay->setEnabled(true);
+            btnStop->setEnabled(true);
+            fileName->setText(file);        //показать текущий файл на GUI
+            //начать воспроизведение файла сразу
+            player->play();
+       } else fileName->setText(QObject::tr("Wrong format"));
     }
 }
 
@@ -222,11 +249,39 @@ void SoundPlayer::slotStatusChanged(QMediaPlayer::State state)
 //нажатие правой кнопкой для меню
 void SoundPlayer::slotMenuActivated(QAction* action)
 {
-
+    int i=0;
+    //если открытие, то открываем файлик
+    if ((QString(QObject::tr("Open"))) == action->text().remove("&")) {
+        QString file = QFileDialog::getOpenFileName(this, "Open File");     //вызов файл диалога
+        //если файл все-таки открыт
+        if (!file.isEmpty()) {
+            if ((i = file.indexOf(".mp3"))!=-1 || (i= file.indexOf(".WAV"))!=-1) {
+                player->setMedia(QUrl::fromLocalFile(file));     //загрузить файл в медиа плейер
+                btnPlay->setEnabled(true);
+                btnStop->setEnabled(true);
+                fileName->setText(file);        //показать текущий файл на GUI
+                //начать воспроизведение файла сразу
+                player->play();
+           } else fileName->setText(QObject::tr("Wrong format"));
+        }
+    }
 }
 
 //отработка смены дизайна
 void SoundPlayer::slotDesignChange(QAction* action)
 {
 
+}
+
+//смена языка
+void SoundPlayer::slotLanguageChange(QAction* action)
+{
+    QTranslator translator;
+    if (action->objectName()=="Rus") {
+        translator.load("widget_ru.qm", ".");
+    }
+    if (action->objectName()=="De") {
+       translator.load("/Lang/widget_de.qm", ".");
+    }
+    qApp->installTranslator(&translator);   //загрузим в приложение транслятор
 }
