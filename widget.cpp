@@ -1,7 +1,7 @@
 #include "widget.h"
 
 //конструктор медиа
-SoundPlayer::SoundPlayer(QWidget *pwgt):QWidget(pwgt)
+SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
 {
     //создать кнопку Open
     QPushButton* btnOpen = new QPushButton("&Open");
@@ -39,6 +39,7 @@ SoundPlayer::SoundPlayer(QWidget *pwgt):QWidget(pwgt)
     QObject::connect(slPosition, SIGNAL(sliderMoved(int)), this, SLOT(slotSetMediaPos(int)));
     QObject::connect(player, SIGNAL(positionChanged(qint64)), this, SLOT(slotSetSliderPos(qint64)));
     QObject::connect(player, SIGNAL(durationChanged(qint64)), this, SLOT(slotSetDuration(qint64)));
+    //QObject::connect(slPosition, SIGNAL()
     //отслеживание изменения состояния плейра
     QObject::connect(player, SIGNAL(stateChanged(QMediaPlayer::State)), this, SLOT(slotStatusChanged(QMediaPlayer::State)));
 
@@ -68,12 +69,32 @@ SoundPlayer::SoundPlayer(QWidget *pwgt):QWidget(pwgt)
     lastLay->addWidget(fileName, 0, Qt::AlignCenter);
 
     this->setLayout(lastLay);
+
+    this->setAcceptDrops(true);     //разрешить перетаскивание данных плееру
 }
 
 //чистка памяти
 SoundPlayer::~SoundPlayer()
 {
     //ToDo
+}
+
+//событие попадания перетаскиваемого файла на виджет
+void SoundPlayer::dragEnterEvent(QDragEnterEvent* pe)
+{
+   //проверка нужных форматов
+   if (int i=pe->mimeData()->text().indexOf(".mp3")!= -1 || (i=pe->mimeData()->text().indexOf(".WAV")!=-1)) {
+       pe->acceptProposedAction();       //разрешим перетаскивание файла
+   } else fileName->setText("Wrong format");
+}
+
+void SoundPlayer::dropEvent(QDropEvent* pe)
+{
+    QString str = pe->mimeData()->text().remove("file:///");        //удаляем лишнее из строки
+    player->setMedia(QUrl::fromLocalFile(str)); //загружаем из перетаскиваемого файла путь
+    player->play();
+    //отобразить в файл пути
+    fileName->setText(str);
 }
 
 //переводит милисек в QString

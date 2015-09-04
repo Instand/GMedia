@@ -13,10 +13,14 @@ int main(int argc, char *argv[])
     style.open(QFile::ReadOnly);
     //применить стиль
     a.setStyleSheet(QString(style.readAll()));
-    sound.setWindowFlags(Qt::Window | Qt::FramelessWindowHint);            //базовая фомра окна
-    sound.setWindowTitle("God's MediaPlayer");  //устаноить верхнюю надпись окна
+    //sound.setWindowFlags(Qt::Window | Qt::FramelessWindowHint);            //базовая фомра окна
+
+    sound.setWindowFlags(Qt::Window);   //для debuga
+
+    sound.setWindowTitle("God's Media");  //устаноить верхнюю надпись окна
     //виджет Option
-    sound.resize(420, 100);
+    sound.setFixedSize(420,100);
+    //sound.resize(420, 100);
     sound.show();
     return a.exec();
 }

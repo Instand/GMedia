@@ -15,6 +15,9 @@ public:
 protected:
     QMediaPlayer* player;
     QVBoxLayout* vbox;
+    //переопределить события обработки drag & drop
+    virtual void dragEnterEvent(QDragEnterEvent * pe);
+    virtual void dropEvent(QDropEvent* pe);
 private:
     QPushButton* btnPlay;
     QPushButton* btnStop;

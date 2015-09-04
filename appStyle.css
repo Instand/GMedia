@@ -1,14 +1,17 @@
+/* наводим курсор на кнопки*/
+QPushButton:hover {
+    min-width: 16 px;
+    min-height: 20 px;
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #4763FF, stop:1 #00FF00);
+    border-radius: 5px;
+}
+
 QPushButton {
     min-width: 16 px;
     min-height: 20 px;
     color: white;
-    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #EE82EE, stop:1 #00FF00);
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #C0C0C0, stop:1 #00A5FF);
     border-radius: 5px;
-}
-/* наводим курсор на кнопки*/
-QPushButton:hover {
-    background: qlineargradient(x1:1, y1:0, x2:0, y2:1, stop:0 #000080, stop:1 #008000);
-    border-style: solid;
 }
 
 QPushButton:pressed {
