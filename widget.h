@@ -25,6 +25,7 @@ private:
     QLabel* timeCurrent;
     QLabel* timeRemain;
     QLabel* fileName;
+    QCheckBox* repeatCheck;
     QString msecsToString(int n);
 private slots:
     void slotOpen();

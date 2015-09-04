@@ -66,7 +66,14 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
 
     QVBoxLayout* lastLay = new QVBoxLayout;
     lastLay->addLayout(thirdLay);
-    lastLay->addWidget(fileName, 0, Qt::AlignCenter);
+
+    QHBoxLayout* fileNameAndRepeat = new QHBoxLayout;
+    fileNameAndRepeat->addWidget(fileName, 0, Qt::AlignLeft);
+    //создание кнопки проверки повтора
+    repeatCheck = new QCheckBox("Repeat ");
+    fileNameAndRepeat->addWidget(repeatCheck, 0 ,Qt::AlignRight);
+
+    lastLay->addLayout(fileNameAndRepeat);
 
     this->setLayout(lastLay);
 
@@ -88,13 +95,16 @@ void SoundPlayer::dragEnterEvent(QDragEnterEvent* pe)
    } else fileName->setText("Wrong format");
 }
 
+//если разрешено перетаскивание
 void SoundPlayer::dropEvent(QDropEvent* pe)
 {
     QString str = pe->mimeData()->text().remove("file:///");        //удаляем лишнее из строки
     player->setMedia(QUrl::fromLocalFile(str)); //загружаем из перетаскиваемого файла путь
     player->play();
-    //отобразить в файл пути
-    fileName->setText(str);
+    //активировать кнопки
+    btnPlay->setEnabled(true);
+    btnStop->setEnabled(true);
+    fileName->setText(str); //отобразить в файл пути
 }
 
 //переводит милисек в QString
@@ -142,6 +152,12 @@ void SoundPlayer::slotSetSliderPos(qint64 n)
     timeCurrent->setText(msecsToString(n));
     int Duration = slPosition->maximum();
     timeRemain->setText(msecsToString(Duration - n));
+    //повторять проигрывание если установлен флажок Repeat
+    if (slPosition->value()==Duration) {
+        if (repeatCheck->isChecked()) {
+            player->play();
+        }
+    }
 }
 
 //движение слайдера контроля времени

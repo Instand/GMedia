@@ -44,4 +44,26 @@ QLabel {
     border-radius: 10px;
 }
 
+/*дизайн Repeat*/
+QCheckBox {
+   spacing: 5px;
+   font-family: "Comic Sans MS";
+   color: white;
+   min-width: 10px;
+}
+
+QCheckBox:indicator {
+   width: 13px;
+   height: 13px;
+   background: #FAFAFF;
+   border-radius: 3px;
+}
+
+QCheckBox:indicator:checked{
+    background: green; /*Lime*/
+    border: 1px solid #F0FFF0;
+    spacing: 10px;
+}
+
+
 
