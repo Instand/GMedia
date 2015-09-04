@@ -41,7 +41,8 @@ QLabel {
 
 .SoundPlayer {
     background: qlineargradient(x1:0, y:0, x2:1, y:0, stop:0 #000000, stop:0.5 #255, stop:1 #000000);
-    border-radius: 10px;
+    border: 2px solid white;
+    border-radius: 20px;
 }
 
 /*дизайн Repeat*/
@@ -59,10 +60,31 @@ QCheckBox:indicator {
    border-radius: 3px;
 }
 
-QCheckBox:indicator:checked{
+QCheckBox:indicator:checked {
     background: green; /*Lime*/
     border: 1px solid #F0FFF0;
     spacing: 10px;
+}
+
+/*Дизайн меню*/
+
+QMenu {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #1E69D2, stop:1 #C4E4FF);
+    color: white;
+    border: 2px solid black;
+    border-radius: 5px;
+    font-family: "Comic Sans MS";
+}
+
+QMenu::item:selected {
+   background: #F0FBFF;
+   color:black;
+   border-radius: 2px;
+}
+
+QMenu::item:pressed {
+   background: #C0C0C0;
+   border-radius: 2px;
 }
 
 

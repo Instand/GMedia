@@ -15,12 +15,11 @@ int main(int argc, char *argv[])
     a.setStyleSheet(QString(style.readAll()));
     //sound.setWindowFlags(Qt::Window | Qt::FramelessWindowHint);            //базовая фомра окна
 
-    sound.setWindowFlags(Qt::Window);   //для debuga
+    sound.setWindowFlags(Qt::Window| Qt::WindowShadeButtonHint | Qt::WindowDoesNotAcceptFocus);   //для debuga
 
     sound.setWindowTitle("God's Media");  //устаноить верхнюю надпись окна
     //виджет Option
     sound.setFixedSize(420,100);
-    //sound.resize(420, 100);
     sound.show();
     return a.exec();
 }

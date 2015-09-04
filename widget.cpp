@@ -4,7 +4,7 @@
 SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
 {
     //создать кнопку Open
-    QPushButton* btnOpen = new QPushButton("&Open");
+    QPushButton* btnOpen = new QPushButton(QObject::tr("Open"));
     QSlider* slrVolume = new QSlider;       //установить слайдер уровня громкости
 
     //выделить память под элементы private полей
@@ -13,7 +13,7 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     slPosition = new QSlider;
     timeCurrent = new QLabel(msecsToString(0));
     timeRemain = new QLabel(msecsToString(0));
-    fileName = new QLabel("None");
+    fileName = new QLabel(QObject::tr("None"));
     player = new QMediaPlayer;  //встроенный медиа плейер
     //кнопка Play
     btnPlay->setEnabled(false); //изначально кнопка enabled
@@ -23,7 +23,6 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     btnStop->setIcon(this->style()->standardIcon(QStyle::SP_MediaStop));
 
     slPosition->setRange(0, 0);
-    //slPosition->setValue(0);
     slPosition->setOrientation(Qt::Horizontal);
 
     slrVolume->setRange(0, 100);
@@ -48,7 +47,6 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     firstLay->addWidget(btnOpen);
     firstLay->addWidget(btnPlay);
     firstLay->addWidget(btnStop);
-    //firstLay->addWidget(slrVolume);
 
     QHBoxLayout* secondLay = new QHBoxLayout;
     secondLay->addWidget(timeCurrent);
@@ -58,7 +56,6 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     vbox = new QVBoxLayout;
     vbox->addLayout(firstLay);
     vbox->addLayout(secondLay);
-    //vbox->addWidget(fileName);
 
     QHBoxLayout* thirdLay = new QHBoxLayout;
     thirdLay->addLayout(vbox);
@@ -70,7 +67,7 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     QHBoxLayout* fileNameAndRepeat = new QHBoxLayout;
     fileNameAndRepeat->addWidget(fileName, 0, Qt::AlignLeft);
     //создание кнопки проверки повтора
-    repeatCheck = new QCheckBox("Repeat ");
+    repeatCheck = new QCheckBox(QObject::tr("Repeat "));
     fileNameAndRepeat->addWidget(repeatCheck, 0 ,Qt::AlignRight);
 
     lastLay->addLayout(fileNameAndRepeat);
@@ -78,12 +75,41 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     this->setLayout(lastLay);
 
     this->setAcceptDrops(true);     //разрешить перетаскивание данных плееру
+    //создаем меню
+    mainMenu = new QMenu;
+    //создание в меню открытия
+    QAction* mOpen = mainMenu->addAction(QObject::tr("&Open"), this, SLOT(slotMenuActivated(QAction*)), Qt::CTRL+Qt::Key_O);
+    //разделитель
+    mainMenu->addSeparator();
+    mainMenu->addAction(QObject::tr("&Play"), player, SLOT(play()));
+    mainMenu->addAction(QObject::tr("&Stop"), player, SLOT(stop()));
+    mainMenu->addAction(QObject::tr("&Pause"), player, SLOT(pause()));
+    mainMenu->addSeparator();
+    //опции
+    QMenu* optionMenu = new QMenu("Option&s", mainMenu);
+    mainMenu->addMenu(optionMenu);  //добавим выплывающие опции
+    mainMenu->addSeparator();
+    //выход
+    mainMenu->addAction(QObject::tr("&Exit"), qApp, SLOT(quit()), Qt::CTRL + Qt::Key_E);
+
+    //заполняем меню Options
+    QMenu* langMenu = new QMenu("Language", optionMenu);    //настройки языка
+    optionMenu->addMenu(langMenu);
+    QMenu* designMenu = new QMenu("Design", optionMenu);    //настройка дизайна
+    optionMenu->addMenu(designMenu);
+    //заполняем языковое меню
+    QAction* engAction = langMenu->addAction("English");
+    QAction* rusAction = langMenu->addAction("Russian");
+    QAction* deAction = langMenu->addAction("Germany");
+    QAction* frAction = langMenu->addAction("French");
+    //заполняем меню дизайна
+    QAction* defaultAction = designMenu->addAction("Default", this, SLOT(slotDesignChange(QAction*)));
 }
 
-//чистка памяти
+//чистка памятиeeE
 SoundPlayer::~SoundPlayer()
 {
-    //ToDo
+    delete player;
 }
 
 //событие попадания перетаскиваемого файла на виджет
@@ -92,7 +118,7 @@ void SoundPlayer::dragEnterEvent(QDragEnterEvent* pe)
    //проверка нужных форматов
    if (int i=pe->mimeData()->text().indexOf(".mp3")!= -1 || (i=pe->mimeData()->text().indexOf(".WAV")!=-1)) {
        pe->acceptProposedAction();       //разрешим перетаскивание файла
-   } else fileName->setText("Wrong format");
+   } else fileName->setText(QObject::tr("Wrong format"));
 }
 
 //если разрешено перетаскивание
@@ -105,6 +131,12 @@ void SoundPlayer::dropEvent(QDropEvent* pe)
     btnPlay->setEnabled(true);
     btnStop->setEnabled(true);
     fileName->setText(str); //отобразить в файл пути
+}
+
+//вызов меню
+void SoundPlayer::contextMenuEvent(QContextMenuEvent *me)
+{
+    mainMenu->exec(me->globalPos());    //открывать меню там, где находится указатель мыши
 }
 
 //переводит милисек в QString
@@ -178,11 +210,23 @@ void SoundPlayer::slotSetDuration(qint64 n)
 //реакция на смену состояния плеера
 void SoundPlayer::slotStatusChanged(QMediaPlayer::State state)
 {
-    switch(state){
+    switch(state) {
         case(QMediaPlayer::PlayingState):
             btnPlay->setIcon(this->style()->standardIcon(QStyle::SP_MediaPause));
             break;
         default:
             btnPlay->setIcon(this->style()->standardIcon(QStyle::SP_MediaPlay));
     }
+}
+
+//нажатие правой кнопкой для меню
+void SoundPlayer::slotMenuActivated(QAction* action)
+{
+
+}
+
+//отработка смены дизайна
+void SoundPlayer::slotDesignChange(QAction* action)
+{
+
 }
