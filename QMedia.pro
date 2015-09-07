@@ -13,9 +13,11 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        widget.cpp
+        widget.cpp \
+    mediamenu.cpp
 
-HEADERS  += widget.h
+HEADERS  += widget.h \
+    mediamenu.h
 
 RESOURCES += \
     res.qrc

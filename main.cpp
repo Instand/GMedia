@@ -13,10 +13,7 @@ int main(int argc, char *argv[])
     style.open(QFile::ReadOnly);
     //применить стиль
     a.setStyleSheet(QString(style.readAll()));
-    //sound.setWindowFlags(Qt::Window | Qt::FramelessWindowHint);            //базовая фомра окна
-
     sound.setWindowFlags(Qt::Window| Qt::WindowShadeButtonHint);   //для debuga
-
     sound.setWindowTitle("God's Media");  //устаноить верхнюю надпись окна
     //виджет Option
     sound.setFixedSize(420,100);

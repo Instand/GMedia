@@ -4,8 +4,8 @@
 SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
 {
     //создать кнопку Open
-    QPushButton* btnOpen = new QPushButton(QObject::tr("Open"));
-    QSlider* slrVolume = new QSlider;       //установить слайдер уровня громкости
+    btnOpen = new QPushButton(QObject::tr("Open"));
+    slrVolume = new QSlider;       //установить слайдер уровня громкости
 
     //выделить память под элементы private полей
     btnPlay = new QPushButton;
@@ -75,50 +75,23 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     this->setLayout(lastLay);
 
     this->setAcceptDrops(true);     //разрешить перетаскивание данных плееру
+
     //создаем меню
-    mainMenu = new QMenu;
-    //создание в меню открытия
-    QAction* mOpen = mainMenu->addAction(QObject::tr("&Open"));
-    QObject::connect(mainMenu, SIGNAL(triggered(QAction*)), this, SLOT(slotMenuActivated(QAction*)));
-    //разделитель
-    mainMenu->addSeparator();
-    mainMenu->addAction(QObject::tr("&Play"), player, SLOT(play()));
-    mainMenu->addAction(QObject::tr("&Stop"), player, SLOT(stop()));
-    mainMenu->addAction(QObject::tr("&Pause"), player, SLOT(pause()));
-    mainMenu->addSeparator();
-    //опции
-    QMenu* optionMenu = new QMenu(QObject::tr("Option&s"), mainMenu);
-    mainMenu->addMenu(optionMenu);  //добавим выплывающие опции
-    mainMenu->addSeparator();
-    //выход
-    mainMenu->addAction(QObject::tr("&Exit"), qApp, SLOT(quit()), Qt::CTRL + Qt::Key_E);
-
-    //заполняем меню Options
-    QMenu* langMenu = new QMenu(QObject::tr("Language"), optionMenu);    //настройки языка
-    optionMenu->addMenu(langMenu);
-    QMenu* designMenu = new QMenu(QObject::tr("Design"), optionMenu);    //настройка дизайна
-    optionMenu->addMenu(designMenu);
-    //заполняем языковое меню
-    QAction* engAction = langMenu->addAction(QObject::tr("English"));
-    QAction* rusAction = langMenu->addAction(QObject::tr("Russian"));
-    QAction* deAction = langMenu->addAction(QObject::tr("Germany"));
-    langMenu->addAction(QObject::tr("French"));
-    //заполняем меню дизайна
-    QAction* defaultAction = designMenu->addAction(QObject::tr("Default"), this, SLOT(slotDesignChange(QAction*)));
-    QAction* magicAction = designMenu->addAction(QObject::tr("Magic style"), this, SLOT(slotDesignChange(QAction*)));
-    QAction* mnitiAction = designMenu->addAction(QObject::tr("MNITI style"), this, SLOT(slotDesignChange(QAction*)));
-    //соединим слоты для перевода
-    QObject::connect(langMenu, SIGNAL(triggered(QAction*)), this, SLOT(slotLanguageChange(QAction*)));
-    //присвоение имен указателям на объекты меню языка
-    rusAction->setObjectName("Rus");
-    deAction->setObjectName("De");
-
+    menu = new MediaMenu;
+    QObject::connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(slotMenuActivated(QAction*)));   //соединить клик меню с слотом активации меню
+    //cвязать паузу плеера
+    QObject::connect(menu->getPauseAction(), SIGNAL(triggered(bool)), player, SLOT(pause()));
+    //связать игру плеера
+    QObject::connect(menu->getPlayAction(), SIGNAL(triggered(bool)), player, SLOT(play()));
+    //связать стоп плеера
+    QObject::connect(menu->getStopAction(), SIGNAL(triggered(bool)), player, SLOT(stop()));
 }
 
 //чистка памятиeeE
 SoundPlayer::~SoundPlayer()
 {
     delete player;
+    delete menu;
 }
 
 //переводим
@@ -152,7 +125,7 @@ void SoundPlayer::dropEvent(QDropEvent* pe)
 //вызов меню
 void SoundPlayer::contextMenuEvent(QContextMenuEvent *me)
 {
-    mainMenu->exec(me->globalPos());    //открывать меню там, где находится указатель мыши
+    menu->exec(me->globalPos());    //открывать меню там, где находится указатель мыши
 }
 
 //событие смены языка

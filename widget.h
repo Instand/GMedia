@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <QPainter>
 #include <QMediaPlayer>
+#include "mediamenu.h"
 
 //основной класс мультимедийного плеера
 class SoundPlayer: public QWidget {
@@ -31,9 +32,14 @@ private:
     QLabel* fileName;
     QCheckBox* repeatCheck;
     QString msecsToString(int n);
-    QMenu* mainMenu;
+    //кнопка открытия файлов
+    QPushButton* btnOpen;
+    //ползунок громкости
+    QSlider* slrVolume;
+    //QMenu* mainMenu;
+    MediaMenu* menu;
 private slots:
-    void slotOpen();
+    void slotOpen();        //открытие окна файлов
     void slotPlay();
     void slotSetSliderPos(qint64);
     void slotSetMediaPos(int);
