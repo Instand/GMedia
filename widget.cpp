@@ -13,6 +13,9 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     //применить стиль
     this->setStyleSheet(QString(styleCSS->readAll()));
 
+    //строка нахождения переводов
+    strTransPath=qApp->applicationDirPath() + "/translation/";
+
     //создать кнопку Open
     btnOpen = new QPushButton(QObject::tr("Open"));
     slrVolume = new QSlider;       //установить слайдер уровня громкости
@@ -98,6 +101,13 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     QObject::connect(menu->getPlayAction(), SIGNAL(triggered(bool)), player, SLOT(play()));
     //связать стоп плеера
     QObject::connect(menu->getStopAction(), SIGNAL(triggered(bool)), player, SLOT(stop()));
+    //связать смену языка
+    QObject::connect(menu->getLangMenu(), SIGNAL(triggered(QAction*)), this, SLOT(slotLanguageChange(QAction*)));
+    //QObject::connect(menu->getEngAction(), SIGNAL(triggered(bool)), this, SLOT(slotLanguageChange(QAction*)));
+
+    //установить переводчки
+    qApp->installTranslator(qtTrans);
+    qApp->installTranslator(appTrans);
 }
 
 //чистка памяти
@@ -145,7 +155,8 @@ void SoundPlayer::contextMenuEvent(QContextMenuEvent *me)
 void SoundPlayer::changeEvent(QEvent *pe)
 {
     if (pe->type() == QEvent::LanguageChange) {
-        retranslateGUI();
+        menu->retranslateMenu();
+        //ToDo перевод основного интерфейса
     }
 }
 
@@ -262,12 +273,19 @@ void SoundPlayer::slotDesignChange(QAction* action)
 //смена языка
 void SoundPlayer::slotLanguageChange(QAction* action)
 {
-    QTranslator translator;
+    qtTrans->load("qt_" + QLocale::system().name(),
+                      QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    qApp->installTranslator(qtTrans);
+
     if (action->objectName()=="Rus") {
-        translator.load("widget_ru.qm", ".");
+        appTrans->load("qmedia_ru", strTransPath);
+        qDebug() << strTransPath;
+        qApp->installTranslator(appTrans); //загрузим в приложение транслятор
     }
-    if (action->objectName()=="De") {
-       translator.load("/Lang/widget_de.qm", ".");
+
+    if (action->objectName()=="Eng") {
+       appTrans->load("qmedia_en", strTransPath);
+       qDebug() << strTransPath;
+       qApp->installTranslator(appTrans); //загрузим в приложение транслятор
     }
-    qApp->installTranslator(&translator);   //загрузим в приложение транслятор
 }

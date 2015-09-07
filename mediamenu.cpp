@@ -44,7 +44,14 @@ MediaMenu::MediaMenu(QWidget* pwgt):QMenu(pwgt)
 
     //создание  имен для меню
     rusAction->setObjectName("Rus");
+    engAction->setObjectName("Eng");
     deAction->setObjectName("De");
+}
+
+//чистка памяти
+MediaMenu::~MediaMenu()
+{
+    delete menuStyleCSS;
 }
 
 //перевести интерфейс меню
@@ -94,5 +101,21 @@ QAction *MediaMenu::getPlayAction() const
 QAction *MediaMenu::getStopAction() const
 {
     return stopAction;
+}
+
+//получить указатель на rusAction
+QAction *MediaMenu::getRusAction() const
+{
+    return rusAction;
+}
+
+QAction *MediaMenu::getEngAction() const
+{
+    return engAction;
+}
+
+QMenu *MediaMenu::getLangMenu() const
+{
+    return langMenu;
 }
 

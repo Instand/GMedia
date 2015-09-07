@@ -22,4 +22,5 @@ HEADERS  += widget.h \
 RESOURCES += \
     res.qrc
 
+TRANSLATIONS += qmedia_ru.ts
 

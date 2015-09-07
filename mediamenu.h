@@ -7,11 +7,15 @@ class MediaMenu: public QMenu {
 
 public:
     MediaMenu(QWidget* pwgt=0);
+    virtual ~MediaMenu();
     void retranslateMenu();
     virtual void contextMenuEvent(QContextMenuEvent* me);
     QAction* getPauseAction() const;
     QAction* getPlayAction() const;
     QAction* getStopAction() const;
+    QAction* getRusAction() const;
+    QAction* getEngAction() const;
+    QMenu* getLangMenu() const;
 
 private:
     QAction* mOpen;     //меню Open
