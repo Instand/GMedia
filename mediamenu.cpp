@@ -3,9 +3,12 @@
 //реализация параметров меню
 MediaMenu::MediaMenu(QWidget* pwgt):QMenu(pwgt)
 {
-    //создаем меню
-    //mainMenu = new QMenu;
-    //this->addMenu(mainMenu);
+    //выделить память и применить дизайн
+    menuStyleCSS = new QFile(":/menuStyle.css");
+    menuStyleCSS->open(QFile::ReadOnly);
+    this->setStyleSheet(QString(menuStyleCSS->readAll()));
+
+
     //создание в меню открытия
     mOpen = this->addAction(QObject::tr("&Open"));
     //разделитель
@@ -19,7 +22,7 @@ MediaMenu::MediaMenu(QWidget* pwgt):QMenu(pwgt)
     this->addMenu(optionMenu);  //добавим выплывающие опции
     this->addSeparator();
     //выход
-    this->addAction(QObject::tr("&Exit"), qApp, SLOT(quit()), Qt::CTRL + Qt::Key_E);
+    exitAction = this->addAction(QObject::tr("&Exit"), qApp, SLOT(quit()), Qt::CTRL + Qt::Key_E);
 
     //заполняем меню Options
     langMenu = new QMenu(QObject::tr("Language"), optionMenu);    //настройки языка
@@ -31,7 +34,7 @@ MediaMenu::MediaMenu(QWidget* pwgt):QMenu(pwgt)
     //заполняем языковое меню
     engAction = langMenu->addAction(QObject::tr("English"));
     rusAction = langMenu->addAction(QObject::tr("Russian"));
-    deAction = langMenu->addAction(QObject::tr("Germany"));
+    deAction = langMenu->addAction(QObject::tr("Dutch"));
     frAction = langMenu->addAction(QObject::tr("French"));
 
     //заполняем меню дизайна
@@ -47,7 +50,26 @@ MediaMenu::MediaMenu(QWidget* pwgt):QMenu(pwgt)
 //перевести интерфейс меню
 void MediaMenu::retranslateMenu()
 {
-
+    mOpen->setText(tr("&Open"));
+    playAction->setText(tr("&Play"));
+    stopAction->setText(tr("&Stop"));
+    pauseAction->setText(tr("&Pause"));
+    //обновляем подменю Options
+    optionMenu->setTitle(tr("Option&s"));
+    exitAction->setText(tr("&Exit"));
+    //обновляем подменю Design
+    designMenu->setTitle(tr("Design"));
+    //обновляем подменю Language
+    langMenu->setTitle(tr("Language"));
+    //обновить список языков
+    engAction->setText(tr("English"));
+    rusAction->setText(tr("Russian"));
+    deAction->setText(tr("Dutch"));
+    frAction->setText(tr("French"));
+    //обновить список стилей
+    defaultAction->setText(tr("Default"));
+    magicAction->setText(tr("Magic style"));
+    mnitiAction->setText(tr("MNITI style"));
 }
 
 //открытие меню

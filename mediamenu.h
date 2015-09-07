@@ -18,6 +18,7 @@ private:
     QAction* playAction;        //меню Play
     QAction* stopAction;        //меню Stop
     QAction* pauseAction;       //меню Pause
+    QAction* exitAction;    //меню Exit
     QMenu* optionMenu;      //подменю Options
     QMenu* langMenu;    //подменю Language
     QMenu* designMenu;  //подменю Design
@@ -29,6 +30,7 @@ private:
     QAction* defaultAction; //дизайн по умолчанию
     QAction* magicAction;   //Магический дизайн
     QAction* mnitiAction;   //дизайн МНИТИ
+    QFile* menuStyleCSS;   //дизайн меню
 };
 
 

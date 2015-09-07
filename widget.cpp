@@ -3,9 +3,23 @@
 //конструктор медиа
 SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
 {
+    this->setFixedSize(420,100);        //установим неизменяющийся размер окна плеера
+    this->setWindowTitle("God's Media");  //устаноим верхнюю надпись окна
+
+    //установить стиль программы
+    //файлик css
+    styleCSS = new QFile(":/appStyle.css");
+    styleCSS->open(QFile::ReadOnly);
+    //применить стиль
+    this->setStyleSheet(QString(styleCSS->readAll()));
+
     //создать кнопку Open
     btnOpen = new QPushButton(QObject::tr("Open"));
     slrVolume = new QSlider;       //установить слайдер уровня громкости
+
+    //выделить память под переводчики
+    appTrans = new QTranslator;
+    qtTrans = new QTranslator;
 
     //выделить память под элементы private полей
     btnPlay = new QPushButton;
@@ -38,7 +52,6 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     QObject::connect(slPosition, SIGNAL(sliderMoved(int)), this, SLOT(slotSetMediaPos(int)));
     QObject::connect(player, SIGNAL(positionChanged(qint64)), this, SLOT(slotSetSliderPos(qint64)));
     QObject::connect(player, SIGNAL(durationChanged(qint64)), this, SLOT(slotSetDuration(qint64)));
-    //QObject::connect(slPosition, SIGNAL()
     //отслеживание изменения состояния плейра
     QObject::connect(player, SIGNAL(stateChanged(QMediaPlayer::State)), this, SLOT(slotStatusChanged(QMediaPlayer::State)));
 
@@ -87,7 +100,7 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     QObject::connect(menu->getStopAction(), SIGNAL(triggered(bool)), player, SLOT(stop()));
 }
 
-//чистка памятиeeE
+//чистка памяти
 SoundPlayer::~SoundPlayer()
 {
     delete player;

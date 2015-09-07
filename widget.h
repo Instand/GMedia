@@ -15,7 +15,7 @@ public:
     virtual ~SoundPlayer();
     void retranslateGUI();
 protected:
-    QMediaPlayer* player;
+    QMediaPlayer* player;   //основной плеер
     QVBoxLayout* vbox;
     //переопределить события обработки drag & drop
     virtual void dragEnterEvent(QDragEnterEvent * pe);
@@ -36,8 +36,14 @@ private:
     QPushButton* btnOpen;
     //ползунок громкости
     QSlider* slrVolume;
-    //QMenu* mainMenu;
-    MediaMenu* menu;
+    MediaMenu* menu;            //выплывающее меню
+    //добавим переводчики
+    QTranslator* appTrans;
+    QTranslator* qtTrans;
+    //строка определения пути файлов перевода
+    QString strTransPath;
+    //открытие файла для стиля
+    QFile* styleCSS;
 private slots:
     void slotOpen();        //открытие окна файлов
     void slotPlay();
