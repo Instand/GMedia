@@ -5,7 +5,7 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
 {
     this->setFixedSize(420,100);        //установим неизменяющийся размер окна плеера
     this->setWindowTitle("God's Media");  //устаноим верхнюю надпись окна
-
+    this->setWindowIcon(QIcon(":/ringtones"));
     //установить стиль программы
     //файлик css
     styleCSS = new QFile(":/appStyle.css");
