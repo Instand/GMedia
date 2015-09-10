@@ -6,6 +6,7 @@
 #include <QPainter>
 #include <QMediaPlayer>
 #include "mediamenu.h"
+#include "aboutdialog.h"
 
 //основной класс мультимедийного плеера
 class SoundPlayer: public QWidget {
@@ -44,6 +45,8 @@ private:
     QString strTransPath;
     //открытие файла для стиля
     QFile* styleCSS;
+    //окно about
+    AboutDialog* dlg;
 private slots:
     void slotOpen();        //открытие окна файлов
     void slotPlay();
@@ -57,6 +60,7 @@ private slots:
     void slotDesignChange(QAction*);
     //слот смены языка
     void slotLanguageChange(QAction* );
+    void slotShowAbout();
 };
 
 #endif // WIDGET_H

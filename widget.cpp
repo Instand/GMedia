@@ -3,7 +3,7 @@
 //конструктор медиа
 SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
 {
-    this->setFixedSize(420,100);        //установим неизменяющийся размер окна плеера
+    this->setFixedSize(420,110);        //установим неизменяющийся размер окна плеера
     this->setWindowTitle("God's Media");  //устаноим верхнюю надпись окна
     this->setWindowIcon(QIcon(":/ringtones"));
     //установить стиль программы
@@ -23,6 +23,8 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     //выделить память под переводчики
     appTrans = new QTranslator;
     qtTrans = new QTranslator;
+    //выделим память под about
+    dlg = new AboutDialog;
 
     //выделить память под элементы private полей
     btnPlay = new QPushButton;
@@ -103,7 +105,8 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     QObject::connect(menu->getStopAction(), SIGNAL(triggered(bool)), player, SLOT(stop()));
     //связать смену языка
     QObject::connect(menu->getLangMenu(), SIGNAL(triggered(QAction*)), this, SLOT(slotLanguageChange(QAction*)));
-    //QObject::connect(menu->getEngAction(), SIGNAL(triggered(bool)), this, SLOT(slotLanguageChange(QAction*)));
+    //связано событие появления окна
+    QObject::connect(menu->getAboutAction(), SIGNAL(triggered(bool)), this, SLOT(slotShowAbout()));
 
     //установить переводчки
     qApp->installTranslator(qtTrans);
@@ -113,8 +116,10 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
 //чистка памяти
 SoundPlayer::~SoundPlayer()
 {
-    delete player;
-    delete menu;
+    delete player;      //чистим основной плеер
+    delete menu;    //чистим меню
+    delete dlg;     //чистим about
+    delete styleCSS;    //чистим файл дизайна
 }
 
 //переводим
@@ -157,7 +162,7 @@ void SoundPlayer::changeEvent(QEvent *pe)
     if (pe->type() == QEvent::LanguageChange) {
         menu->retranslateMenu();
         //ToDo перевод основного интерфейса
-    }
+    } else QWidget::changeEvent(pe);
 }
 
 //переводит милисек в QString
@@ -180,6 +185,9 @@ void SoundPlayer::slotOpen()
             player->setMedia(QUrl::fromLocalFile(file));     //загрузить файл в медиа плейер
             btnPlay->setEnabled(true);
             btnStop->setEnabled(true);
+            if (file.length() > 45) {
+                file.insert(45, "\n");
+            }
             fileName->setText(file);        //показать текущий файл на GUI
             //начать воспроизведение файла сразу
             player->play();
@@ -256,7 +264,10 @@ void SoundPlayer::slotMenuActivated(QAction* action)
                 player->setMedia(QUrl::fromLocalFile(file));     //загрузить файл в медиа плейер
                 btnPlay->setEnabled(true);
                 btnStop->setEnabled(true);
-                fileName->setText(file);        //показать текущий файл на GUI
+                if (file.length() > 45) {
+                    file.insert(45, "\n");
+                }
+             fileName->setText(file);        //показать текущий файл на GUI
                 //начать воспроизведение файла сразу
                 player->play();
            } else fileName->setText(QObject::tr("Wrong format"));
@@ -279,13 +290,20 @@ void SoundPlayer::slotLanguageChange(QAction* action)
 
     if (action->objectName()=="Rus") {
         appTrans->load("qmedia_ru", strTransPath);
-        qDebug() << strTransPath;
+        //qDebug() << strTransPath;
         qApp->installTranslator(appTrans); //загрузим в приложение транслятор
     }
 
     if (action->objectName()=="Eng") {
        appTrans->load("qmedia_en", strTransPath);
-       qDebug() << strTransPath;
+       //qDebug() << strTransPath;
        qApp->installTranslator(appTrans); //загрузим в приложение транслятор
     }
+}
+
+
+//показать окно About
+void SoundPlayer::slotShowAbout()
+{
+    dlg->slotShowHide();
 }

@@ -21,6 +21,8 @@ MediaMenu::MediaMenu(QWidget* pwgt):QMenu(pwgt)
     optionMenu = new QMenu(QObject::tr("Option&s"), this);
     this->addMenu(optionMenu);  //добавим выплывающие опции
     this->addSeparator();
+    aboutAction = this->addAction(QObject::tr("About God's Media"));    //меню About
+    this->addSeparator();
     //выход
     exitAction = this->addAction(QObject::tr("&Exit"), qApp, SLOT(quit()), Qt::CTRL + Qt::Key_E);
 
@@ -117,5 +119,10 @@ QAction *MediaMenu::getEngAction() const
 QMenu *MediaMenu::getLangMenu() const
 {
     return langMenu;
+}
+
+QAction *MediaMenu::getAboutAction() const
+{
+    return aboutAction;
 }
 

@@ -8,14 +8,15 @@ class MediaMenu: public QMenu {
 public:
     MediaMenu(QWidget* pwgt=0);
     virtual ~MediaMenu();
-    void retranslateMenu();
-    virtual void contextMenuEvent(QContextMenuEvent* me);
+    void retranslateMenu();     //перевод меню на другие языки
+    virtual void contextMenuEvent(QContextMenuEvent* me);       //переопределяем для своей реализации всплывающего меню
     QAction* getPauseAction() const;
     QAction* getPlayAction() const;
     QAction* getStopAction() const;
     QAction* getRusAction() const;
     QAction* getEngAction() const;
     QMenu* getLangMenu() const;
+    QAction* getAboutAction() const;
 
 private:
     QAction* mOpen;     //меню Open
@@ -23,6 +24,7 @@ private:
     QAction* stopAction;        //меню Stop
     QAction* pauseAction;       //меню Pause
     QAction* exitAction;    //меню Exit
+    QAction* aboutAction;
     QMenu* optionMenu;      //подменю Options
     QMenu* langMenu;    //подменю Language
     QMenu* designMenu;  //подменю Design
