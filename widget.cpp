@@ -92,8 +92,6 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
 
     this->setLayout(lastLay);
 
-    this->setAcceptDrops(true);     //разрешить перетаскивание данных плееру
-
     //создаем меню
     menu = new MediaMenu;
     QObject::connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(slotMenuActivated(QAction*)));   //соединить клик меню с слотом активации меню
@@ -111,6 +109,8 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     //установить переводчки
     qApp->installTranslator(qtTrans);
     qApp->installTranslator(appTrans);
+
+    this->setAcceptDrops(true);     //разрешить перетаскивание данных плееру
 }
 
 //чистка памяти
@@ -147,6 +147,9 @@ void SoundPlayer::dropEvent(QDropEvent* pe)
     //активировать кнопки
     btnPlay->setEnabled(true);
     btnStop->setEnabled(true);
+    if (str.length() > 45) {    //смена длины, при большом размере
+        str.insert(45, "\n");
+    }
     fileName->setText(str); //отобразить в файл пути
 }
 
@@ -284,19 +287,19 @@ void SoundPlayer::slotDesignChange(QAction* action)
 //смена языка
 void SoundPlayer::slotLanguageChange(QAction* action)
 {
-    qtTrans->load("qt_" + QLocale::system().name(),
-                      QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    //qtTrans->load("qt_" + QLocale::system().name(),
+                     //QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     qApp->installTranslator(qtTrans);
 
     if (action->objectName()=="Rus") {
         appTrans->load("qmedia_ru", strTransPath);
-        //qDebug() << strTransPath;
+        qDebug() << strTransPath;
         qApp->installTranslator(appTrans); //загрузим в приложение транслятор
     }
 
     if (action->objectName()=="Eng") {
        appTrans->load("qmedia_en", strTransPath);
-       //qDebug() << strTransPath;
+       qDebug() << strTransPath;
        qApp->installTranslator(appTrans); //загрузим в приложение транслятор
     }
 }
