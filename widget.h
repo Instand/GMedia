@@ -7,6 +7,7 @@
 #include <QMediaPlayer>
 #include "mediamenu.h"
 #include "aboutdialog.h"
+#include "systemtraymenu.h"
 
 //основной класс мультимедийного плеера
 class SoundPlayer: public QWidget {
@@ -24,6 +25,8 @@ protected:
     //событие меню
     virtual void contextMenuEvent(QContextMenuEvent* me);
     virtual void changeEvent(QEvent* pe);   //событие смены языка
+    //событие при сворачивании приложения
+    virtual void closeEvent(QCloseEvent* ce);
 private:
     QPushButton* btnPlay;
     QPushButton* btnStop;
@@ -47,6 +50,10 @@ private:
     QFile* styleCSS;
     //окно about
     AboutDialog* dlg;
+    //меню для панели задач
+    QSystemTrayIcon* trayIcon;
+    SystemTrayMenu* hiddenMenu;
+    bool changer;   //контроль сворачивания/открытия
 private slots:
     void slotOpen();        //открытие окна файлов
     void slotPlay();
@@ -61,6 +68,7 @@ private slots:
     //слот смены языка
     void slotLanguageChange(QAction* );
     void slotShowAbout();
+    void slotHideShow();
 };
 
 #endif // WIDGET_H

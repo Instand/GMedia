@@ -6,6 +6,7 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     this->setFixedSize(420,110);        //установим неизменяющийся размер окна плеера
     this->setWindowTitle("God's Media");  //устаноим верхнюю надпись окна
     this->setWindowIcon(QIcon(":/ringtones"));
+    changer = false;    //по умолчанию скрыт
     //установить стиль программы
     //файлик css
     styleCSS = new QFile(":/appStyle.css");
@@ -111,6 +112,16 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     qApp->installTranslator(appTrans);
 
     this->setAcceptDrops(true);     //разрешить перетаскивание данных плееру
+
+    //реализация сворачивания
+    hiddenMenu = new SystemTrayMenu(this);
+    //сворачивание
+    trayIcon = new QSystemTrayIcon(this);
+    trayIcon->setContextMenu(hiddenMenu);
+    trayIcon->setToolTip("Your God's Media using a hidden mode");
+    trayIcon->setIcon(QIcon(":/ringtones"));
+    //связать слот Показа виджета
+    QObject::connect(hiddenMenu->getActionShow(), SIGNAL(triggered(bool)), this, SLOT(slotHideShow()));
 }
 
 //чистка памяти
@@ -166,6 +177,14 @@ void SoundPlayer::changeEvent(QEvent *pe)
         menu->retranslateMenu();
         //ToDo перевод основного интерфейса
     } else QWidget::changeEvent(pe);
+}
+
+void SoundPlayer::closeEvent(QCloseEvent *ce)
+{
+    trayIcon->show();
+    this->hide();
+    trayIcon->setToolTip(fileName->text());     //текущая композиция
+    trayIcon->showMessage("God's Media", QObject::tr("Current song - ") + fileName->text(), QSystemTrayIcon::Information, 100);
 }
 
 //переводит милисек в QString
@@ -309,4 +328,11 @@ void SoundPlayer::slotLanguageChange(QAction* action)
 void SoundPlayer::slotShowAbout()
 {
     dlg->slotShowHide();
+}
+
+//показать/свернуть
+void SoundPlayer::slotHideShow()
+{
+    this->show();
+    trayIcon->hide();
 }

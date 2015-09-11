@@ -9,7 +9,8 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     SoundPlayer sound;
 
-    sound.setWindowFlags(Qt::Window| Qt::WindowShadeButtonHint);   //для debuga
+    sound.setWindowFlags(Qt::Window);   //для debuga
+    QApplication::setQuitOnLastWindowClosed(false);  //чтобы приложение сворачивалось в SystemTray
 
     sound.show();
     return a.exec();

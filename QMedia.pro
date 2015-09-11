@@ -15,11 +15,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         widget.cpp \
     mediamenu.cpp \
-    aboutdialog.cpp
+    aboutdialog.cpp \
+    systemtraymenu.cpp
 
 HEADERS  += widget.h \
     mediamenu.h \
-    aboutdialog.h
+    aboutdialog.h \
+    systemtraymenu.h
 
 RESOURCES += \
     res.qrc

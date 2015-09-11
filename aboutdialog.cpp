@@ -1,6 +1,6 @@
 #include "aboutdialog.h"
 
-AboutDialog::AboutDialog(QWidget* pwgt):QDialog(pwgt, Qt::WindowTitleHint)       //формируем Диалоговое окно
+AboutDialog::AboutDialog(QWidget* pwgt):QDialog(pwgt, Qt::ToolTip)       //формируем Диалоговое окно
 {
     switcher=false;     //по умолчанию скрыто
     lbl = new QLabel;
