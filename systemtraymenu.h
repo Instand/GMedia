@@ -11,6 +11,8 @@ private:
     QAction* actionStop;
     QAction* actionExit;
     QAction* actionShow;
+    QMenu* playerMenu;
+    QMenu* advanceMenu;
 public:
     SystemTrayMenu(QWidget* pwgt=0);
     QAction* getActionOpen() const;
@@ -18,9 +20,6 @@ public:
     QAction* getActionPause() const;
     QAction* getActionStop() const;
     QAction* getActionShow() const;
-
-public slots:
-    //void slotShowMessage();
 };
 
 #endif // SYSTEMTRAYMENU_H

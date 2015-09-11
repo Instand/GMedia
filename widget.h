@@ -2,8 +2,6 @@
 #define WIDGET_H
 
 #include <QtWidgets>
-#include <QWidget>
-#include <QPainter>
 #include <QMediaPlayer>
 #include "mediamenu.h"
 #include "aboutdialog.h"
@@ -54,6 +52,8 @@ private:
     QSystemTrayIcon* trayIcon;
     SystemTrayMenu* hiddenMenu;
     bool changer;   //контроль сворачивания/открытия
+    //файл инфо
+    QFileInfo* fileInfo;
 private slots:
     void slotOpen();        //открытие окна файлов
     void slotPlay();

@@ -32,9 +32,13 @@ SystemTrayMenu::SystemTrayMenu(QWidget* pwgt):QMenu(pwgt)
 {
     actionOpen = this->addAction(QObject::tr("&Open"));     //открыть
     this->addSeparator();
-    actionPlay = this->addAction(QObject::tr("&Play"));
-    actionPause = this->addAction(QObject::tr("Pa&use"));
-    actionStop = this->addAction(QObject::tr("&Stop"));
+    playerMenu = new QMenu(QObject::tr("Pla&yer menu"), this);
+    this->addMenu(playerMenu);
+    actionPlay = playerMenu->addAction(QObject::tr("&Play"));
+    actionPause = playerMenu->addAction(QObject::tr("Pa&use"));
+    actionStop = playerMenu->addAction(QObject::tr("&Stop"));
+    advanceMenu = new QMenu(QObject::tr("Advance"), this);
+    this->addMenu(advanceMenu);
     actionShow = this->addAction(QObject::tr("Show"));
     this->addSeparator();
     actionExit = this->addAction(QObject::tr("&Exit"));     //выход

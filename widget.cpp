@@ -4,7 +4,7 @@
 SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
 {
     this->setFixedSize(420,110);        //установим неизменяющийся размер окна плеера
-    this->setWindowTitle("God's Media");  //устаноим верхнюю надпись окна
+    this->setWindowTitle("GMedia");  //устаноим верхнюю надпись окна
     this->setWindowIcon(QIcon(":/ringtones"));
     changer = false;    //по умолчанию скрыт
     //установить стиль программы
@@ -26,6 +26,8 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     qtTrans = new QTranslator;
     //выделим память под about
     dlg = new AboutDialog;
+    //выделим память под информацию файлов
+    fileInfo = new QFileInfo;
 
     //выделить память под элементы private полей
     btnPlay = new QPushButton;
@@ -118,10 +120,20 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     //сворачивание
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setContextMenu(hiddenMenu);
-    trayIcon->setToolTip("Your God's Media using a hidden mode");
+    trayIcon->setToolTip("Your GMedia using a hidden mode");
     trayIcon->setIcon(QIcon(":/ringtones"));
     //связать слот Показа виджета
     QObject::connect(hiddenMenu->getActionShow(), SIGNAL(triggered(bool)), this, SLOT(slotHideShow()));
+    //связать нижнее меню
+    QObject::connect(hiddenMenu->getActionOpen(), SIGNAL(triggered(bool)), this, SLOT(slotOpen()));
+    //связать кнопки скрытого меню с функциями плеера
+    //cвязать паузу плеера
+    QObject::connect(hiddenMenu->getActionPause(), SIGNAL(triggered(bool)), player, SLOT(pause()));
+    //связать игру плеера
+    QObject::connect(hiddenMenu->getActionPlay(), SIGNAL(triggered(bool)), player, SLOT(play()));
+    //связать стоп плеера
+    QObject::connect(hiddenMenu->getActionStop(), SIGNAL(triggered(bool)), player, SLOT(stop()));
+
 }
 
 //чистка памяти
@@ -131,6 +143,7 @@ SoundPlayer::~SoundPlayer()
     delete menu;    //чистим меню
     delete dlg;     //чистим about
     delete styleCSS;    //чистим файл дизайна
+    delete fileInfo; //чисти инфу по файлам
 }
 
 //переводим
@@ -152,15 +165,18 @@ void SoundPlayer::dragEnterEvent(QDragEnterEvent* pe)
 //если разрешено перетаскивание
 void SoundPlayer::dropEvent(QDropEvent* pe)
 {
-    QString str = pe->mimeData()->text().remove("file:///");        //удаляем лишнее из строки
+    QString str = pe->mimeData()->text();
+    fileInfo->setFile(str); //файл для информации
     player->setMedia(QUrl::fromLocalFile(str)); //загружаем из перетаскиваемого файла путь
     player->play();
     //активировать кнопки
     btnPlay->setEnabled(true);
     btnStop->setEnabled(true);
+    str=fileInfo->baseName();       //копируем только имя файла
     if (str.length() > 45) {    //смена длины, при большом размере
         str.insert(45, "\n");
     }
+    str.append("\nSize: " + QString().number(fileInfo->size()) + " Kb");        //добавим информацию о размере файла
     fileName->setText(str); //отобразить в файл пути
 }
 
@@ -179,12 +195,13 @@ void SoundPlayer::changeEvent(QEvent *pe)
     } else QWidget::changeEvent(pe);
 }
 
+//событие закрытия основного окна
 void SoundPlayer::closeEvent(QCloseEvent *ce)
 {
     trayIcon->show();
     this->hide();
-    trayIcon->setToolTip(fileName->text());     //текущая композиция
-    trayIcon->showMessage("God's Media", QObject::tr("Current song - ") + fileName->text(), QSystemTrayIcon::Information, 100);
+    trayIcon->setToolTip(fileInfo->baseName());     //текущая композиция
+    trayIcon->showMessage("GMedia", QObject::tr("Current song - ") + fileInfo->baseName(), QSystemTrayIcon::Information, 100);
 }
 
 //переводит милисек в QString
@@ -204,12 +221,15 @@ void SoundPlayer::slotOpen()
     //если файл все-таки открыт
     if (!file.isEmpty()) {
         if ((i = file.indexOf(".mp3"))!=-1 || (i= file.indexOf(".WAV"))!=-1) {
+            fileInfo->setFile(file);
             player->setMedia(QUrl::fromLocalFile(file));     //загрузить файл в медиа плейер
             btnPlay->setEnabled(true);
             btnStop->setEnabled(true);
+            file = fileInfo->baseName();     //нужно только имя файла
             if (file.length() > 45) {
                 file.insert(45, "\n");
             }
+            file.append("\nSize: " + QString().number(fileInfo->size()) + " Kb");
             fileName->setText(file);        //показать текущий файл на GUI
             //начать воспроизведение файла сразу
             player->play();
@@ -242,6 +262,9 @@ void SoundPlayer::slotSetSliderPos(qint64 n)
     if (slPosition->value()==Duration) {
         if (repeatCheck->isChecked()) {
             player->play();
+            if (trayIcon->isVisible()) {
+                trayIcon->showMessage(fileInfo->baseName(), "Repeated", QSystemTrayIcon::Information, 0);           //если повторяем, то
+            } else trayIcon->showMessage("Next Song:", fileInfo->baseName(), QSystemTrayIcon::Information, 0);
         }
     }
 }
@@ -284,11 +307,14 @@ void SoundPlayer::slotMenuActivated(QAction* action)
         if (!file.isEmpty()) {
             if ((i = file.indexOf(".mp3"))!=-1 || (i= file.indexOf(".WAV"))!=-1) {
                 player->setMedia(QUrl::fromLocalFile(file));     //загрузить файл в медиа плейер
+                fileInfo->setFile(file);
                 btnPlay->setEnabled(true);
                 btnStop->setEnabled(true);
+                file = fileInfo->baseName();
                 if (file.length() > 45) {
                     file.insert(45, "\n");
                 }
+             file.append("\nSize: " + QString().number(fileInfo->size()) + " Kb");
              fileName->setText(file);        //показать текущий файл на GUI
                 //начать воспроизведение файла сразу
                 player->play();
@@ -330,7 +356,7 @@ void SoundPlayer::slotShowAbout()
     dlg->slotShowHide();
 }
 
-//показать/свернуть
+//показать/свернуть в панель задач и обратно
 void SoundPlayer::slotHideShow()
 {
     this->show();

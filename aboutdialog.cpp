@@ -12,7 +12,7 @@ AboutDialog::AboutDialog(QWidget* pwgt):QDialog(pwgt, Qt::ToolTip)       //фо�
     this->setStyleSheet(QString(aboutStyleCSS->readAll()));
     //установить изображение
     pic_lbl->setPixmap(QPixmap(QApplication::applicationDirPath() + "/add/About.png"));
-    lbl->setText(QObject::tr("God's Media v. 1.7.\nAbout author: MNITI, Arew (c) 2015"));
+    lbl->setText(QObject::tr("GMedia v. 2.1.\nCorporation: JSC 'MNITI'\nAuthor: Arew (c) 2015"));
     btnOk = new QPushButton("&Ok");
     btnOk->setObjectName("btnOk");
     QObject::connect(btnOk, SIGNAL(clicked(bool)), this, SLOT(slotShowHide()));   //нажатие кнопки
@@ -21,8 +21,10 @@ AboutDialog::AboutDialog(QWidget* pwgt):QDialog(pwgt, Qt::ToolTip)       //фо�
     box->addWidget(lbl, 0, Qt::AlignCenter);
     box->addWidget(btnOk, 0, Qt::AlignCenter);      //кнопку по центру
     this->setLayout(box);
-    this->setWindowTitle("About God's Media");
+    this->setWindowTitle("About GMedia");
     this->setWindowIcon(QIcon(":/ringtones"));
+    //установим модальность для прерывания приложения
+    this->setModal(true);
 }
 
 AboutDialog::~AboutDialog()
