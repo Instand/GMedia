@@ -28,6 +28,11 @@ QAction *SystemTrayMenu::getActionShow() const
     return actionShow;
 }
 
+
+QAction *SystemTrayMenu::getAboutMenu() const
+{
+    return aboutMenu;
+}
 SystemTrayMenu::SystemTrayMenu(QWidget* pwgt):QMenu(pwgt)
 {
     actionOpen = this->addAction(QObject::tr("&Open"));     //открыть
@@ -38,6 +43,7 @@ SystemTrayMenu::SystemTrayMenu(QWidget* pwgt):QMenu(pwgt)
     actionPause = playerMenu->addAction(QObject::tr("Pa&use"));
     actionStop = playerMenu->addAction(QObject::tr("&Stop"));
     advanceMenu = new QMenu(QObject::tr("Advance"), this);
+    aboutMenu = advanceMenu->addAction(QObject::tr("About GMedia"));
     this->addMenu(advanceMenu);
     actionShow = this->addAction(QObject::tr("Show"));
     this->addSeparator();

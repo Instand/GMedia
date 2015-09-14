@@ -14,6 +14,7 @@ public:
     SoundPlayer(QWidget* pwgt=0);
     virtual ~SoundPlayer();
     void retranslateGUI();
+    QString calculateSongSize(qint64 songSize);
 protected:
     QMediaPlayer* player;   //основной плеер
     QVBoxLayout* vbox;
@@ -32,6 +33,7 @@ private:
     QLabel* timeCurrent;
     QLabel* timeRemain;
     QLabel* fileName;
+    QLabel* playerTime;
     QCheckBox* repeatCheck;
     QString msecsToString(int n);
     //кнопка открытия файлов
@@ -54,6 +56,13 @@ private:
     bool changer;   //контроль сворачивания/открытия
     //файл инфо
     QFileInfo* fileInfo;
+    unsigned int closeCount;    //счетчик сворачиваний
+    QToolBox* songList;
+    //таймер для отображения времени
+    QTimer* currentTime;
+    //флаг для времени
+    bool showTime;
+    QLabel* songSize;   //отображение размера песен
 private slots:
     void slotOpen();        //открытие окна файлов
     void slotPlay();
@@ -69,6 +78,9 @@ private slots:
     void slotLanguageChange(QAction* );
     void slotShowAbout();
     void slotHideShow();
+    void slotChangePoisition(int);
+    //слот отработки времени таймера показа времени
+    void slotShowTime();
 };
 
 #endif // WIDGET_H

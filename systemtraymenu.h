@@ -13,6 +13,7 @@ private:
     QAction* actionShow;
     QMenu* playerMenu;
     QMenu* advanceMenu;
+    QAction* aboutMenu;
 public:
     SystemTrayMenu(QWidget* pwgt=0);
     QAction* getActionOpen() const;
@@ -20,6 +21,7 @@ public:
     QAction* getActionPause() const;
     QAction* getActionStop() const;
     QAction* getActionShow() const;
+    QAction* getAboutMenu() const;
 };
 
 #endif // SYSTEMTRAYMENU_H

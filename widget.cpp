@@ -3,10 +3,12 @@
 //конструктор медиа
 SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
 {
-    this->setFixedSize(420,110);        //установим неизменяющийся размер окна плеера
+    this->setFixedSize(500,135);        //установим неизменяющийся размер окна плеера
     this->setWindowTitle("GMedia");  //устаноим верхнюю надпись окна
     this->setWindowIcon(QIcon(":/ringtones"));
+    showTime=false;
     changer = false;    //по умолчанию скрыт
+    closeCount=0;
     //установить стиль программы
     //файлик css
     styleCSS = new QFile(":/appStyle.css");
@@ -93,7 +95,29 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
 
     lastLay->addLayout(fileNameAndRepeat);
 
-    this->setLayout(lastLay);
+    //по идее сюда можно залить QToolBox
+    QHBoxLayout* helpBox = new QHBoxLayout;
+    playerTime = new QLabel;
+    songSize = new QLabel;
+    //для теста и дизайна
+    fileName->setMinimumHeight(30);
+    repeatCheck->setMinimumHeight(30);
+    //-------------------------------------------
+    playerTime->setText(QDateTime::currentDateTime().toString("dd.MM.yyyy   hh:mm:ss"));
+    songList = new QToolBox;
+    helpBox->addWidget(songSize, 0, Qt::AlignLeft);
+    helpBox->addWidget(playerTime, 0, Qt::AlignRight);
+
+    QVBoxLayout* theLastLayout = new QVBoxLayout;
+    theLastLayout->addLayout(lastLay);
+    theLastLayout->addLayout(helpBox);
+
+    this->setLayout(theLastLayout);
+    //соединим событие таймера с слотом показа времени
+    currentTime = new QTimer;
+    QObject::connect(currentTime, SIGNAL(timeout()), this, SLOT(slotShowTime()));
+    //активировать таймер
+    currentTime->start(500);
 
     //создаем меню
     menu = new MediaMenu;
@@ -133,6 +157,7 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     QObject::connect(hiddenMenu->getActionPlay(), SIGNAL(triggered(bool)), player, SLOT(play()));
     //связать стоп плеера
     QObject::connect(hiddenMenu->getActionStop(), SIGNAL(triggered(bool)), player, SLOT(stop()));
+    QObject::connect(hiddenMenu->getAboutMenu(), SIGNAL(triggered(bool)), this, SLOT(slotShowAbout()));
 
 }
 
@@ -151,6 +176,18 @@ void SoundPlayer::retranslateGUI()
 {
     fileName->setText(tr("None"));
     repeatCheck->setText(tr("Repeat "));
+}
+
+//расчет размера песни в Mb
+QString SoundPlayer::calculateSongSize(qint64 songSize)
+{
+    int i;
+    for (i=0; songSize > 1023; songSize /= 1024, i++) {
+        if (i >=4) {
+            break;
+        }
+    }
+    return "Size: " + QString().setNum(songSize) + " " + "BKMGT"[i];
 }
 
 //событие попадания перетаскиваемого файла на виджет
@@ -172,12 +209,12 @@ void SoundPlayer::dropEvent(QDropEvent* pe)
     //активировать кнопки
     btnPlay->setEnabled(true);
     btnStop->setEnabled(true);
-    str=fileInfo->baseName();       //копируем только имя файла
-    if (str.length() > 45) {    //смена длины, при большом размере
-        str.insert(45, "\n");
+    str=fileInfo->fileName();       //копируем только имя файла
+    if (str.length() > 65) {    //смена длины, при большом размере
+        str.insert(65, "\n");
     }
-    str.append("\nSize: " + QString().number(fileInfo->size()) + " Kb");        //добавим информацию о размере файла
     fileName->setText(str); //отобразить в файл пути
+    songSize->setText(calculateSongSize(fileInfo->size()));       //расчет и вывод размера файла
 }
 
 //вызов меню
@@ -200,8 +237,14 @@ void SoundPlayer::closeEvent(QCloseEvent *ce)
 {
     trayIcon->show();
     this->hide();
-    trayIcon->setToolTip(fileInfo->baseName());     //текущая композиция
-    trayIcon->showMessage("GMedia", QObject::tr("Current song - ") + fileInfo->baseName(), QSystemTrayIcon::Information, 100);
+    trayIcon->setToolTip(fileInfo->fileName());     //текущая композиция
+    //то не выводим сообщение
+    if (fileName->text()!=QObject::tr("None")) {
+        trayIcon->showMessage("GMedia", fileInfo->baseName(), QSystemTrayIcon::Information, 100);
+    } else if (closeCount < 1) {
+        trayIcon->showMessage("GMedia", QObject::tr("Your GMedia is there right now"), QSystemTrayIcon::Information, 100);
+        closeCount++;
+    }
 }
 
 //переводит милисек в QString
@@ -225,15 +268,18 @@ void SoundPlayer::slotOpen()
             player->setMedia(QUrl::fromLocalFile(file));     //загрузить файл в медиа плейер
             btnPlay->setEnabled(true);
             btnStop->setEnabled(true);
-            file = fileInfo->baseName();     //нужно только имя файла
-            if (file.length() > 45) {
-                file.insert(45, "\n");
+            file = fileInfo->fileName();     //нужно только имя файла
+            if (file.length() > 65) {
+                file.insert(65, "\n");
             }
-            file.append("\nSize: " + QString().number(fileInfo->size()) + " Kb");
             fileName->setText(file);        //показать текущий файл на GUI
+            songSize->setText(calculateSongSize(fileInfo->size()));       //расчет и вывод размера файла
             //начать воспроизведение файла сразу
             player->play();
-       } else fileName->setText(QObject::tr("Wrong format"));
+       } else {
+            fileName->setText(QObject::tr("Wrong format"));
+            songSize->setText("");       //расчет и вывод размера файла
+        }
     }
 }
 
@@ -294,6 +340,7 @@ void SoundPlayer::slotStatusChanged(QMediaPlayer::State state)
         default:
             btnPlay->setIcon(this->style()->standardIcon(QStyle::SP_MediaPlay));
     }
+    trayIcon->setToolTip(fileInfo->baseName());
 }
 
 //нажатие правой кнопкой для меню
@@ -310,15 +357,18 @@ void SoundPlayer::slotMenuActivated(QAction* action)
                 fileInfo->setFile(file);
                 btnPlay->setEnabled(true);
                 btnStop->setEnabled(true);
-                file = fileInfo->baseName();
-                if (file.length() > 45) {
-                    file.insert(45, "\n");
+                file = fileInfo->fileName();
+                if (file.length() > 65) {
+                    file.insert(65, "\n");
                 }
-             file.append("\nSize: " + QString().number(fileInfo->size()) + " Kb");
              fileName->setText(file);        //показать текущий файл на GUI
+             songSize->setText(calculateSongSize(fileInfo->size()));       //расчет и вывод размера файла
                 //начать воспроизведение файла сразу
                 player->play();
-           } else fileName->setText(QObject::tr("Wrong format"));
+           } else {
+                fileName->setText(QObject::tr("Wrong format"));
+                songSize->setText("");       //расчет и вывод размера файла
+            }
         }
     }
 }
@@ -361,4 +411,20 @@ void SoundPlayer::slotHideShow()
 {
     this->show();
     trayIcon->hide();
+}
+
+//для тестов
+void SoundPlayer::slotChangePoisition(int pos)
+{
+    slPosition->setValue(pos);
+    player->setPosition(pos);
+}
+
+//показ времени
+void SoundPlayer::slotShowTime()
+{
+    showTime=!showTime;
+    if (showTime) {
+        playerTime->setText(QDateTime::currentDateTime().toString("dd.MM.yyyy   hh:mm ss"));
+    } else playerTime->setText(QDateTime::currentDateTime().toString("dd.MM.yyyy   hh:mm:ss"));
 }
