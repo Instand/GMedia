@@ -1,14 +1,14 @@
 /* наводим курсор на кнопки*/
 QPushButton:hover {
     min-width: 16px;
-    min-height: 25px;
+    min-height: 22px;
     background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #4763FF, stop:1 #00FF00);
     border-radius: 5px;
 }
 
 QPushButton {
     min-width: 16px;
-    min-height: 25px;
+    min-height: 22px;
     color: white;
     background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #C0C0C0, stop:1 #00A5FF);
     border-radius: 5px;
@@ -61,9 +61,90 @@ QCheckBox:indicator {
 }
 
 QCheckBox:indicator:checked {
-    background: green; /*Lime*/
+    background: green;
     border: 1px solid #F0FFF0;
     spacing: 10px;
+}
+
+/*Листы песен*/
+QListView {
+    max-height: 54px;
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #C0C0C0, stop:1 #FFFFFF);
+    border-radius: 3px;
+}
+
+QListView::item:alternate {
+    background: #EEEEEE;
+}
+
+QListView::item:selected {
+    border: 1px solid #6a6ea9;
+    border-radius: 2px;
+}
+
+QListView::item:selected:!active {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                stop: 0 #ABAFE5, stop: 1 #8588B2);
+}
+
+QListView::item:selected:active {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                stop: 0 #6a6ea9, stop: 1 #888dd9);
+}
+
+QListView::item:hover {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                stop: 0 #FAFBFE, stop: 1 #DCDEF1);
+    border-radius: 2px;
+}
+
+/* Дизайн скроллов*/
+QScrollBar:vertical {
+     border: 1px solid black;
+     background: #0000FF;
+     margin: 12px 0 12px 0;
+     border-radius: 2px;
+}
+
+/*Дизайн курсора*/
+QScrollBar::handle:vertical {
+     background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #00FFFF, stop:1 #0000FF);
+     border-radius: 3px;
+     min-height: 15px;
+     min-width: 3px;
+}
+
+ QScrollBar::add-line:vertical {
+     border: 2px solid black;
+     border-radius: 2px;
+     background: #C0C0C0;
+     height: 12px;
+     subcontrol-position: bottom;
+     subcontrol-origin: margin;
+ }
+
+ QScrollBar::sub-line:vertical {
+     border: 2px solid black;
+     border-radius: 2px;
+     background: #C0C0C0;
+     height: 12px;
+     subcontrol-position: top;
+     subcontrol-origin: margin;
+ }
+
+/*Дизайн самих стрелок*/
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+
+     border-radius: 2px;
+     width: 5px;
+     height: 5px;
+     background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #00FFFF, stop:1 #0000FF);
+}
+
+/*Дизайн среднего поля*/
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    background: #FAFAFF;
+    border: 1px solid black;
 }
 
 

@@ -12,7 +12,7 @@ AboutDialog::AboutDialog(QWidget* pwgt):QDialog(pwgt, Qt::ToolTip)       //фо�
     this->setStyleSheet(QString(aboutStyleCSS->readAll()));
     //установить изображение
     pic_lbl->setPixmap(QPixmap(QApplication::applicationDirPath() + "/add/About.png"));
-    lbl->setText(QObject::tr("GMedia v. 2.1.\nCorporation: JSC 'MNITI'\nAuthor: Arew (c) 2015"));
+    lbl->setText(QObject::tr("GMedia v. 2.7.\nCorporation: JSC 'MNITI'\nAuthor: Arew (c) 2015"));
     btnOk = new QPushButton("&Ok");
     btnOk->setObjectName("btnOk");
     QObject::connect(btnOk, SIGNAL(clicked(bool)), this, SLOT(slotShowHide()));   //нажатие кнопки

@@ -56,13 +56,13 @@ private:
     bool changer;   //контроль сворачивания/открытия
     //файл инфо
     QFileInfo* fileInfo;
-    unsigned int closeCount;    //счетчик сворачиваний
-    QToolBox* songList;
+    QListWidget* songList;      //компонент для реализации списка песен
     //таймер для отображения времени
     QTimer* currentTime;
     //флаг для времени
     bool showTime;
     QLabel* songSize;   //отображение размера песен
+    QListWidgetItem* listSong;
 private slots:
     void slotOpen();        //открытие окна файлов
     void slotPlay();
@@ -81,6 +81,8 @@ private slots:
     void slotChangePoisition(int);
     //слот отработки времени таймера показа времени
     void slotShowTime();
+    void slotShowSongMessage();     //слот показа сообщения о текущей песне
+    void slotStartListSong(QListWidgetItem* item);   //проигрывать песню из плей листа
 };
 
 #endif // WIDGET_H

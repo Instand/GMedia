@@ -33,6 +33,11 @@ QAction *SystemTrayMenu::getAboutMenu() const
 {
     return aboutMenu;
 }
+
+QAction *SystemTrayMenu::getActionMessage() const
+{
+    return actionMessage;
+}
 SystemTrayMenu::SystemTrayMenu(QWidget* pwgt):QMenu(pwgt)
 {
     actionOpen = this->addAction(QObject::tr("&Open"));     //открыть
@@ -44,8 +49,9 @@ SystemTrayMenu::SystemTrayMenu(QWidget* pwgt):QMenu(pwgt)
     actionStop = playerMenu->addAction(QObject::tr("&Stop"));
     advanceMenu = new QMenu(QObject::tr("Advance"), this);
     aboutMenu = advanceMenu->addAction(QObject::tr("About GMedia"));
+    actionMessage = advanceMenu->addAction(QObject::tr("Song Message"));        //вывод в систем трей сообщение о песне
     this->addMenu(advanceMenu);
-    actionShow = this->addAction(QObject::tr("Show"));
+    actionShow = this->addAction(QObject::tr("Show player"));
     this->addSeparator();
     actionExit = this->addAction(QObject::tr("&Exit"));     //выход
     QObject::connect(actionExit, SIGNAL(triggered(bool)), qApp, SLOT(quit()));     //щелчек меню на выход
