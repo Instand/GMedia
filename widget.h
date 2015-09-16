@@ -26,6 +26,8 @@ protected:
     virtual void changeEvent(QEvent* pe);   //событие смены языка
     //событие при сворачивании приложения
     virtual void closeEvent(QCloseEvent* ce);
+    //событие нажатия кнопки
+    virtual void keyPressEvent(QKeyEvent* ke);
 private:
     QPushButton* btnPlay;
     QPushButton* btnStop;
@@ -63,6 +65,12 @@ private:
     bool showTime;
     QLabel* songSize;   //отображение размера песен
     QListWidgetItem* listSong;
+    //функция нахождения кол-ва элементов и переключения песни на следущую
+    void nextSong();
+    QListWidgetItem* searchItem;
+    //функция перехода к обратной песне в списке
+    void previousSong();
+    bool checkListItem();   //проверка наличия в листе выбираемой песни
 private slots:
     void slotOpen();        //открытие окна файлов
     void slotPlay();
@@ -83,6 +91,9 @@ private slots:
     void slotShowTime();
     void slotShowSongMessage();     //слот показа сообщения о текущей песне
     void slotStartListSong(QListWidgetItem* item);   //проигрывать песню из плей листа
+    //отработка переключений в системном трее
+    void slotNextSong();
+    void slotPreviousSong();
 };
 
 #endif // WIDGET_H

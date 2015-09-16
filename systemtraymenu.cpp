@@ -38,7 +38,26 @@ QAction *SystemTrayMenu::getActionMessage() const
 {
     return actionMessage;
 }
-SystemTrayMenu::SystemTrayMenu(QWidget* pwgt):QMenu(pwgt)
+
+//перевод меню
+void SystemTrayMenu::retranslateTrayMenu()
+{
+
+}
+
+
+QAction *SystemTrayMenu::getNextSong() const
+{
+    return nextSong;
+}
+
+QAction *SystemTrayMenu::getPreviousSong() const
+{
+    return previousSong;
+}
+
+//основная менюшка
+SystemTrayMenu::SystemTrayMenu(QWidget* pwgt): QMenu(pwgt)
 {
     actionOpen = this->addAction(QObject::tr("&Open"));     //открыть
     this->addSeparator();
@@ -47,6 +66,10 @@ SystemTrayMenu::SystemTrayMenu(QWidget* pwgt):QMenu(pwgt)
     actionPlay = playerMenu->addAction(QObject::tr("&Play"));
     actionPause = playerMenu->addAction(QObject::tr("Pa&use"));
     actionStop = playerMenu->addAction(QObject::tr("&Stop"));
+    playerMenu->addSeparator();
+    previousSong = playerMenu->addAction(QObject::tr("Previous"));
+    nextSong = playerMenu->addAction(QObject::tr("Next"));
+    playerMenu->addSeparator();
     advanceMenu = new QMenu(QObject::tr("Advance"), this);
     aboutMenu = advanceMenu->addAction(QObject::tr("About GMedia"));
     actionMessage = advanceMenu->addAction(QObject::tr("Song Message"));        //вывод в систем трей сообщение о песне

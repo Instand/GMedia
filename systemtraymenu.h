@@ -15,6 +15,8 @@ private:
     QMenu* advanceMenu;
     QAction* aboutMenu;
     QAction* actionMessage;
+    QAction* nextSong;
+    QAction* previousSong;
 public:
     SystemTrayMenu(QWidget* pwgt=0);
     QAction* getActionOpen() const;
@@ -23,7 +25,10 @@ public:
     QAction* getActionStop() const;
     QAction* getActionShow() const;
     QAction* getAboutMenu() const;
-    QAction *getActionMessage() const;  //геттер сообщение о песне
+    QAction *getActionMessage() const;  //сообщение о песне
+    void retranslateTrayMenu(); //перевести меню на другой язык
+    QAction *getNextSong() const;
+    QAction *getPreviousSong() const;
 };
 
 #endif // SYSTEMTRAYMENU_H

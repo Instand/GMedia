@@ -3,7 +3,7 @@
 //конструктор медиа
 SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
 {
-    this->setFixedSize(550, 200);        //установим неизменяющийся размер окна плеера
+    this->setFixedSize(500, 190);        //установим неизменяющийся размер окна плеера
     this->setWindowTitle("GMedia");  //устаноим верхнюю надпись окна
     this->setWindowIcon(QIcon(":/ringtones"));
     showTime=false;
@@ -164,6 +164,9 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     QObject::connect(hiddenMenu->getActionStop(), SIGNAL(triggered(bool)), player, SLOT(stop()));
     QObject::connect(hiddenMenu->getAboutMenu(), SIGNAL(triggered(bool)), this, SLOT(slotShowAbout()));
     QObject::connect(hiddenMenu->getActionMessage(), SIGNAL(triggered(bool)), this, SLOT(slotShowSongMessage()), Qt::AutoConnection);      //автоматическое соединение
+    //дополнительная обработка переключений треков
+    QObject::connect(hiddenMenu->getNextSong(), SIGNAL(triggered(bool)), this, SLOT(slotNextSong()));
+    QObject::connect(hiddenMenu->getPreviousSong(), SIGNAL(triggered(bool)), this, SLOT(slotPreviousSong()));
 
 }
 
@@ -175,13 +178,16 @@ SoundPlayer::~SoundPlayer()
     delete dlg;     //чистим about
     delete styleCSS;    //чистим файл дизайна
     delete fileInfo; //чисти инфу по файлам
+    if (!searchItem)
+        delete searchItem;         //удалим, если пусто
 }
 
 //переводим
 void SoundPlayer::retranslateGUI()
 {
-    fileName->setText(tr("None"));
-    repeatCheck->setText(tr("Repeat "));
+    if (fileName->text() == tr("None"))
+        fileName->setText(tr("None"));
+        repeatCheck->setText(tr("Repeat "));
 }
 
 //расчет размера песни в Mb
@@ -216,9 +222,12 @@ void SoundPlayer::dropEvent(QDropEvent* pe)
     }
     fileName->setText(str); //отобразить в файл пути
     songSize->setText(calculateSongSize(fileInfo->size()));       //расчет и вывод размера файла
-    listSong = new QListWidgetItem(fileInfo->filePath(), songList);
-    listSong->setIcon(QIcon(":/ringtones"));
-    listSong->setSelected(true);
+    //если нет в списке, то добавляем
+    if (checkListItem()) {
+        listSong = new QListWidgetItem(fileInfo->filePath(), songList);
+        listSong->setIcon(QIcon(":/ringtones"));
+        listSong->setSelected(true);
+    } else fileName->setText(QObject::tr("File currently in song list"));
 }
 
 //вызов меню
@@ -248,6 +257,18 @@ void SoundPlayer::closeEvent(QCloseEvent *ce)
     }
 }
 
+//событие нажатия кнопки
+void SoundPlayer::keyPressEvent(QKeyEvent *ke)
+{
+    if (ke->key()==Qt::Key_Delete && songList->selectedItems().back()->isSelected()) {
+        QListWidgetItem* item = songList->selectedItems().back();
+        delete item;    //удаляем песню из списка
+        player->stop();
+        fileName->setText(tr("None"));
+        trayIcon->setToolTip("");
+    }
+}
+
 //переводит милисек в QString
 QString SoundPlayer::msecsToString(int n)
 {
@@ -255,6 +276,86 @@ QString SoundPlayer::msecsToString(int n)
     int minutes = ((n % (60*60*1000))/(60*1000));
     int seconds = ((n % (60*1000))/1000);
     return QTime(hours, minutes, seconds).toString("hh:mm:ss");     //получить формат времени
+}
+
+//переход, при возможности, на следущую песню из плей листа/либо на первую, если это последняя песня
+void SoundPlayer::nextSong()
+{
+    int i=0;
+    searchItem = songList->findItems(fileName->text(), Qt::MatchContains).back();    //ищем текущую песню
+    i = songList->row(searchItem);  //получим строку элемента
+    //смотрим последний это элемент или нет
+    if (i == songList->count()-1) {
+        searchItem = songList->item(0);
+        player->setMedia(QUrl::fromLocalFile(searchItem->text()));
+        fileInfo->setFile(searchItem->text());
+        fileName->setText(fileInfo->fileName());
+        songSize->setText(calculateSongSize(fileInfo->size()));
+        searchItem->setSelected(true);
+        //погнали
+        player->play();
+        //смотрим, где наш виджет
+        if (trayIcon->isVisible()) {
+            trayIcon->setToolTip(fileName->text());
+        }
+    } else {
+        searchItem = songList->item(++i);
+        searchItem->setSelected(true);
+        player->setMedia(QUrl::fromLocalFile(searchItem->text()));
+        fileInfo->setFile(searchItem->text());
+        fileName->setText(fileInfo->fileName());
+        songSize->setText(calculateSongSize(fileInfo->size()));
+        //погнали
+        player->play();
+
+        if (trayIcon->isVisible()) {
+            trayIcon->setToolTip(fileName->text());
+        }
+    }
+}
+
+//отработка перехода указателя назад
+void SoundPlayer::previousSong()
+{
+    int i=0;
+    searchItem = songList->findItems(fileName->text(), Qt::MatchContains).back();    //ищем текущую песню
+    i = songList->row(searchItem);  //получим строку элемента
+    //если это первый элемент, то переходим к последнему элементу
+    if (i==0) {
+        searchItem = songList->item(songList->count()-1);   //ищем последний элемент
+        player->setMedia(QUrl::fromLocalFile(searchItem->text()));
+        fileInfo->setFile(searchItem->text());
+        fileName->setText(fileInfo->fileName());
+        songSize->setText(calculateSongSize(fileInfo->size()));
+        searchItem->setSelected(true);
+        //погнали
+        player->play();
+        //смотрим, где наш виджет
+        if (trayIcon->isVisible()) {
+            trayIcon->setToolTip(fileName->text());
+        }
+    } else {
+        searchItem = songList->item(--i);
+        searchItem->setSelected(true);
+        player->setMedia(QUrl::fromLocalFile(searchItem->text()));
+        fileInfo->setFile(searchItem->text());
+        fileName->setText(fileInfo->fileName());
+        songSize->setText(calculateSongSize(fileInfo->size()));
+        //погнали
+        player->play();
+
+        if (trayIcon->isVisible()) {
+            trayIcon->setToolTip(fileName->text());
+        }
+    }
+}
+
+//проверка наличия трека в листе
+bool SoundPlayer::checkListItem()
+{
+    bool ch = false;    //есть в списке данный трек
+    if (songList->findItems(fileInfo->filePath(), Qt::MatchContains).count() == 0)
+        return ch=true; //списка нет, можно добавлять
 }
 
 //управление открытием файлов
@@ -275,9 +376,13 @@ void SoundPlayer::slotOpen()
             }
             fileName->setText(file);        //показать текущий файл на GUI
             songSize->setText(calculateSongSize(fileInfo->size()));       //расчет и вывод размера файла
-            listSong = new QListWidgetItem(fileInfo->filePath(), songList);
-            listSong->setIcon(QIcon(":/ringtones"));
-            listSong->setSelected(true);
+
+            if (checkListItem()) {
+                listSong = new QListWidgetItem(fileInfo->filePath(), songList);
+                listSong->setIcon(QIcon(":/ringtones"));
+                listSong->setSelected(true);
+            } else fileName->setText(QObject::tr("File currently in song list"));
+
             //начать воспроизведение файла сразу
             player->play();
        } else {
@@ -313,8 +418,16 @@ void SoundPlayer::slotSetSliderPos(qint64 n)
         if (repeatCheck->isChecked()) {
             player->play();
             if (trayIcon->isVisible()) {
-                trayIcon->showMessage(fileInfo->baseName(), "Repeated", QSystemTrayIcon::Information, 0);           //если повторяем, то
-            } else trayIcon->showMessage("Next Song:", fileInfo->baseName(), QSystemTrayIcon::Information, 0);
+                trayIcon->showMessage(fileInfo->baseName(), QObject::tr("Repeated"), QSystemTrayIcon::Information, 0);
+            }
+        }
+        //если есть доступные песни в списке, то запускаем следующую песню
+        else if (songList->count() > 1) {
+            //вызов функции
+            nextSong();
+            if (trayIcon->isVisible()) {
+                trayIcon->showMessage(fileInfo->baseName(), QObject::tr("Next song"), QSystemTrayIcon::Information, 0);
+            }
         }
     }
 }
@@ -322,7 +435,9 @@ void SoundPlayer::slotSetSliderPos(qint64 n)
 //движение слайдера контроля времени
 void SoundPlayer::slotSetMediaPos(int n)
 {
+    player->stop();         //немного алгоритма предотвращения искажения звука
     player->setPosition(n);
+    player->play();
 }
 
 //получение времени проигрывания
@@ -367,9 +482,12 @@ void SoundPlayer::slotMenuActivated(QAction* action)
                 }
              fileName->setText(file);        //показать текущий файл на GUI
              songSize->setText(calculateSongSize(fileInfo->size()));       //расчет и вывод размера файла
-             listSong = new QListWidgetItem(fileInfo->filePath(), songList);
-             listSong->setIcon(QIcon(":/ringtones"));
-             listSong->setSelected(true);
+             //проверка наличия в листе файла
+             if (checkListItem()) {
+                 listSong = new QListWidgetItem(fileInfo->filePath(), songList);
+                 listSong->setIcon(QIcon(":/ringtones"));
+                 listSong->setSelected(true);
+             } else fileName->setText(QObject::tr("File currently in song list"));
                 //начать воспроизведение файла сразу
                 player->play();
            } else {
@@ -445,9 +563,21 @@ void SoundPlayer::slotShowSongMessage()
 //проигрывать песню из плей листа
 void SoundPlayer::slotStartListSong(QListWidgetItem* item)
 {
-    player->setMedia(QUrl::fromLocalFile(item->text()));
-    player->play();
+    player->stop(); //остановим плеер
+    player->setMedia(QUrl::fromLocalFile(item->text()));    //новые данные из плей листа
+    player->play(); //начать проигрывание
+    //обновляем интерфейс
     fileInfo->setFile(item->text());
     fileName->setText(fileInfo->fileName());
-    songSize->setText(calculateSongSize(fileInfo->size()));
+    songSize->setText(calculateSongSize(fileInfo->size()));     //размер
+}
+
+void SoundPlayer::slotNextSong()
+{
+    nextSong();
+}
+
+void SoundPlayer::slotPreviousSong()
+{
+    previousSong();
 }
