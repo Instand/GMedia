@@ -17,12 +17,16 @@ public:
     QAction* getEngAction() const;
     QMenu* getLangMenu() const;
     QAction* getAboutAction() const;
+    QAction* getNextAction() const;
+    QAction* getPreviousAction() const;
 
 private:
     QAction* mOpen;     //меню Open
     QAction* playAction;        //меню Play
     QAction* stopAction;        //меню Stop
     QAction* pauseAction;       //меню Pause
+    QAction* nextAction;    //следующий трек
+    QAction* previousAction;        //предыдущий трек
     QAction* exitAction;    //меню Exit
     QAction* aboutAction;
     QMenu* optionMenu;      //подменю Options

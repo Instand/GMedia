@@ -137,6 +137,9 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     QObject::connect(menu->getLangMenu(), SIGNAL(triggered(QAction*)), this, SLOT(slotLanguageChange(QAction*)));
     //связано событие появления окна
     QObject::connect(menu->getAboutAction(), SIGNAL(triggered(bool)), this, SLOT(slotShowAbout()));
+    //связка next & previous
+    QObject::connect(menu->getNextAction(), SIGNAL(triggered(bool)), this, SLOT(slotNextSong()));
+    QObject::connect(menu->getPreviousAction(), SIGNAL(triggered(bool)), this, SLOT(slotPreviousSong()));
 
     //установить переводчки
     qApp->installTranslator(qtTrans);
@@ -167,7 +170,6 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     //дополнительная обработка переключений треков
     QObject::connect(hiddenMenu->getNextSong(), SIGNAL(triggered(bool)), this, SLOT(slotNextSong()));
     QObject::connect(hiddenMenu->getPreviousSong(), SIGNAL(triggered(bool)), this, SLOT(slotPreviousSong()));
-
 }
 
 //чистка памяти

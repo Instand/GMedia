@@ -17,6 +17,9 @@ MediaMenu::MediaMenu(QWidget* pwgt):QMenu(pwgt)
     stopAction = this->addAction(QObject::tr("&Stop"));
     pauseAction = this->addAction(QObject::tr("&Pause"));
     this->addSeparator();
+    nextAction = this->addAction(QObject::tr("&Next"));
+    previousAction = this->addAction(QObject::tr("Pre&vious"));
+    this->addSeparator();
     //опции
     optionMenu = new QMenu(QObject::tr("Option&s"), this);
     this->addMenu(optionMenu);  //добавим выплывающие опции
@@ -125,4 +128,15 @@ QAction *MediaMenu::getAboutAction() const
 {
     return aboutAction;
 }
+QAction *MediaMenu::getNextAction() const
+{
+    return nextAction;
+}
+QAction *MediaMenu::getPreviousAction() const
+{
+    return previousAction;
+}
+
+
+
 
