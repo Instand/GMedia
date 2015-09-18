@@ -22,7 +22,7 @@ AboutDialog::AboutDialog(QWidget* pwgt):QDialog(pwgt, Qt::ToolTip)       //фо�
     box->addWidget(btnOk, 0, Qt::AlignCenter);      //кнопку по центру
     this->setLayout(box);
     this->setWindowTitle(QObject::tr("About GMedia"));
-    this->setWindowIcon(QIcon(QApplication::applicationDirPath() + "/add/ringtones.ico"));
+    this->setWindowIcon(QIcon(":/ringtones"));
     //установим модальность для прерывания приложения
     this->setModal(true);
 }

@@ -7,7 +7,7 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
 {
     this->setFixedSize(500, 190);        //установим неизменяющийся размер окна плеера
     this->setWindowTitle("GMedia");  //устаноим верхнюю надпись окна
-    this->setWindowIcon(QIcon(QApplication::applicationDirPath() + "/add/ringtones.ico"));
+    this->setWindowIcon(QIcon(":/ringtones"));
     showTime=false;
     changer = false;    //по умолчанию скрыт
     qt_ntfs_permission_lookup++;                //look up
@@ -155,8 +155,7 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     //сворачивание
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setContextMenu(hiddenMenu);
-    trayIcon->setToolTip("Your GMedia using a hidden mode");
-    trayIcon->setIcon(QIcon(QApplication::applicationDirPath() + "/add/ringtones.ico"));
+    trayIcon->setIcon(QIcon(":/ringtones"));
     //связать слот Показа виджета
     QObject::connect(hiddenMenu->getActionShow(), SIGNAL(triggered(bool)), this, SLOT(slotHideShow()));
     //связать нижнее меню
@@ -234,7 +233,7 @@ void SoundPlayer::dropEvent(QDropEvent* pe)
     //если нет в списке, то добавляем
     if (checkListItem()) {
         listSong = new QListWidgetItem(fileInfo->filePath(), songList);
-        listSong->setIcon(QIcon(QApplication::applicationDirPath() + "/add/ringtones.ico"));
+        listSong->setIcon(QIcon(":/ringtones"));
         listSong->setSelected(true);
     } else fileName->setText(QObject::tr("File currently in song list"));
 }
@@ -390,7 +389,7 @@ void SoundPlayer::slotOpen()
 
             if (checkListItem()) {
                 listSong = new QListWidgetItem(fileInfo->filePath(), songList);
-                listSong->setIcon(QIcon(QApplication::applicationDirPath() + "/add/ringtones.ico"));
+                listSong->setIcon(QIcon(":/ringtones"));
                 listSong->setSelected(true);
             } else fileName->setText(QObject::tr("File currently in song list"));
 
@@ -496,7 +495,7 @@ void SoundPlayer::slotMenuActivated(QAction* action)
              //проверка наличия в листе файла
              if (checkListItem()) {
                  listSong = new QListWidgetItem(fileInfo->filePath(), songList);
-                 listSong->setIcon(QIcon(QApplication::applicationDirPath() + "/add/ringtones.ico"));
+                 listSong->setIcon(QIcon(":/ringtones"));
                  listSong->setSelected(true);
              } else fileName->setText(QObject::tr("File currently in song list"));
                 //начать воспроизведение файла сразу
