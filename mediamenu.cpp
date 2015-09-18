@@ -51,6 +51,7 @@ MediaMenu::MediaMenu(QWidget* pwgt):QMenu(pwgt)
     rusAction->setObjectName("Rus");
     engAction->setObjectName("Eng");
     deAction->setObjectName("De");
+    frAction->setObjectName("Fr");
 }
 
 //чистка памяти

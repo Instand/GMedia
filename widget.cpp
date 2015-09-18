@@ -24,7 +24,6 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
 
     //выделить память под переводчики
     appTrans = new QTranslator;
-    qtTrans = new QTranslator;
     //выделим память под about
     dlg = new AboutDialog;
     //выделим память под информацию файлов
@@ -36,7 +35,7 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     slPosition = new QSlider;
     timeCurrent = new QLabel(msecsToString(0));
     timeRemain = new QLabel(msecsToString(0));
-    fileName = new QLabel(QObject::tr("None"));
+    fileName = new QLabel;
     player = new QMediaPlayer;  //встроенный медиа плейер
     //кнопка Play
     btnPlay->setEnabled(false); //изначально кнопка enabled
@@ -142,7 +141,6 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     QObject::connect(menu->getPreviousAction(), SIGNAL(triggered(bool)), this, SLOT(slotPreviousSong()));
 
     //установить переводчки
-    qApp->installTranslator(qtTrans);
     qApp->installTranslator(appTrans);
 
     this->setAcceptDrops(true);     //разрешить перетаскивание данных плееру
@@ -187,14 +185,13 @@ SoundPlayer::~SoundPlayer()
 //переводим
 void SoundPlayer::retranslateGUI()
 {
-    if (fileName->text() == tr("None"))
-        fileName->setText(tr("None"));
-    repeatCheck->setText(tr("Repeat "));
+    repeatCheck->setText(tr("Repeat  "));
     btnOpen->setText(tr("Open"));           //основная кнопка
     //перевод основного меню
     menu->retranslateMenu();
     //перевод скрытого меню
     hiddenMenu->retranslateTrayMenu();
+    dlg->retranslateAbout();
 }
 
 //расчет размера песни в Mb
@@ -259,7 +256,7 @@ void SoundPlayer::closeEvent(QCloseEvent *ce)
     this->hide();
     trayIcon->setToolTip(fileInfo->fileName());     //текущая композиция
     //то не выводим сообщение
-    if (fileName->text()!=QObject::tr("None")) {
+    if (!fileName->text().isEmpty()) {
         trayIcon->showMessage("GMedia", fileInfo->baseName(), QSystemTrayIcon::Information, 100);
     }
 }
@@ -271,7 +268,7 @@ void SoundPlayer::keyPressEvent(QKeyEvent *ke)
         QListWidgetItem* item = songList->selectedItems().back();
         delete item;    //удаляем песню из списка
         player->stop();
-        fileName->setText(tr("None"));
+        fileName->clear();
         trayIcon->setToolTip("");
     }
 }
@@ -289,6 +286,7 @@ QString SoundPlayer::msecsToString(int n)
 void SoundPlayer::nextSong()
 {
     int i=0;
+    player->stop();
     searchItem = songList->findItems(fileName->text(), Qt::MatchContains).back();    //ищем текущую песню
     i = songList->row(searchItem);  //получим строку элемента
     //смотрим последний это элемент или нет
@@ -325,6 +323,7 @@ void SoundPlayer::nextSong()
 void SoundPlayer::previousSong()
 {
     int i=0;
+    player->stop();
     searchItem = songList->findItems(fileName->text(), Qt::MatchContains).back();    //ищем текущую песню
     i = songList->row(searchItem);  //получим строку элемента
     //если это первый элемент, то переходим к последнему элементу
@@ -514,20 +513,29 @@ void SoundPlayer::slotDesignChange(QAction* action)
 //смена языка
 void SoundPlayer::slotLanguageChange(QAction* action)
 {
-    //qtTrans->load("qt_" + QLocale::system().name(),
-                     //QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-    qApp->installTranslator(qtTrans);
 
     if (action->objectName()=="Rus") {
-        appTrans->load("qmedia_ru", strTransPath);
+        appTrans->load("gmedia_ru", strTransPath);
         qDebug() << strTransPath;
         qApp->installTranslator(appTrans); //загрузим в приложение транслятор
     }
 
     if (action->objectName()=="Eng") {
-       appTrans->load("qmedia_en", strTransPath);
+       appTrans->load("gmedia_en", strTransPath);
        qDebug() << strTransPath;
        qApp->installTranslator(appTrans); //загрузим в приложение транслятор
+    }
+
+    if (action->objectName()=="De") {
+        appTrans->load("gmedia_de", strTransPath);
+        qDebug() << strTransPath;
+        qApp->installTranslator(appTrans); //загрузим в приложение транслятор
+    }
+
+    if (action->objectName()=="Fr") {
+        appTrans->load("gmedia_fr", strTransPath);
+        qDebug() << strTransPath;
+        qApp->installTranslator(appTrans); //загрузим в приложение транслятор
     }
 }
 

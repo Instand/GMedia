@@ -32,6 +32,13 @@ AboutDialog::~AboutDialog()
     delete aboutStyleCSS;
 }
 
+//перевести About;
+void AboutDialog::retranslateAbout()
+{
+    lbl->setText(tr("GMedia v. 2.7.\nCorporation: JSC 'MNITI'\nAuthor: Arew (c) 2015"));
+    this->setWindowTitle(tr("About GMedia"));
+}
+
 //скрытие, показ
 void AboutDialog::slotShowHide()
 {

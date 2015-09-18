@@ -15,9 +15,12 @@ private:
 public:
     AboutDialog(QWidget* pwgt=0);
     virtual ~AboutDialog();
+    void retranslateAbout();
 public slots:
     void slotShowHide();            //слот показа/скрытия окна
     void slotDesignChange(QAction* );   //слот смены дизайна
 };
+
+
 
 #endif // ABOUTDIALOG_H

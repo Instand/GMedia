@@ -45,7 +45,6 @@ private:
     MediaMenu* menu;            //выплывающее меню
     //добавим переводчики
     QTranslator* appTrans;
-    QTranslator* qtTrans;
     //строка определения пути файлов перевода
     QString strTransPath;
     //открытие файла для стиля
