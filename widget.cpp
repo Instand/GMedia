@@ -1,5 +1,7 @@
 #include "widget.h"
 
+extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
+
 //конструктор медиа
 SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
 {
@@ -8,6 +10,7 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     this->setWindowIcon(QIcon(":/ringtones"));
     showTime=false;
     changer = false;    //по умолчанию скрыт
+    qt_ntfs_permission_lookup++;                //look up
     //установить стиль программы
     //файлик css
     styleCSS = new QFile(":/appStyle.css");
