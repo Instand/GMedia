@@ -44,14 +44,19 @@ MediaMenu::MediaMenu(QWidget* pwgt):QMenu(pwgt)
 
     //заполняем меню дизайна
     defaultAction = designMenu->addAction(QObject::tr("Default"));
-    magicAction = designMenu->addAction(QObject::tr("Magic style"));
-    mnitiAction = designMenu->addAction(QObject::tr("MNITI style"));
+    magicAction = designMenu->addAction(("Fusion style"));
+    mnitiAction = designMenu->addAction(("Windows style"));
 
     //создание  имен для меню
     rusAction->setObjectName("Rus");
     engAction->setObjectName("Eng");
     deAction->setObjectName("De");
     frAction->setObjectName("Fr");
+
+    //имена для дизайна
+    magicAction->setObjectName("Magic");
+    defaultAction->setObjectName("Default");
+    mnitiAction->setObjectName("Windows");
 }
 
 //чистка памяти
@@ -85,14 +90,39 @@ void MediaMenu::retranslateMenu()
     frAction->setText(tr("French"));
     //обновить список стилей
     defaultAction->setText(tr("Default"));
-    magicAction->setText(tr("Magic style"));
-    mnitiAction->setText(tr("MNITI style"));
 }
 
 //открытие меню
 void MediaMenu::contextMenuEvent(QContextMenuEvent *me)
 {
     this->exec(me->globalPos());    //открывать меню там, где находится указатель мыши
+}
+
+//дизайн в стиле Виндовс
+void MediaMenu::designWindowsMenu()
+{
+    //фактически чистим CSS
+    menuStyleCSS->setFileName("");
+    menuStyleCSS->open(QFile::ReadOnly);
+    this->setStyleSheet(QString(menuStyleCSS->readAll()));
+}
+
+//дизайн в стиле Fusion
+void MediaMenu::designFusionMenu()
+{
+    //фактически чистим CSS
+    menuStyleCSS->setFileName("");
+    menuStyleCSS->open(QFile::ReadOnly);
+    this->setStyleSheet(QString(menuStyleCSS->readAll()));
+}
+
+//дизайн по умолчанию
+void MediaMenu::designDefaultMenu()
+{
+    //выделить память и применить дизайн
+    menuStyleCSS->setFileName(":/menuStyle.css");
+    menuStyleCSS->open(QFile::ReadOnly);
+    this->setStyleSheet(QString(menuStyleCSS->readAll()));
 }
 
 //получить указатель на меню Pause

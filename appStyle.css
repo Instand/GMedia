@@ -34,7 +34,7 @@ QSlider:handle:horizontal {
     border-radius: 5px;
 }
 
-.QLabel {
+QLabel {
     color: white;
     font-family: "Comic Sans MS";
 }

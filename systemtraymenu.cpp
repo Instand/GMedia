@@ -69,6 +69,27 @@ QAction *SystemTrayMenu::getPreviousSong() const
     return previousSong;
 }
 
+void SystemTrayMenu::designWindows()
+{
+    QFile file("");
+    file.open(QIODevice::ReadOnly);
+    this->setStyleSheet(QString(file.readAll()));
+}
+
+void SystemTrayMenu::designFusion()
+{
+    QFile file("");
+    file.open(QIODevice::ReadOnly);
+    this->setStyleSheet(QString(file.readAll()));
+}
+
+void SystemTrayMenu::designDefault()
+{
+    QFile file(":/menuStyle.css");
+    file.open(QIODevice::ReadOnly);
+    this->setStyleSheet(QString(file.readAll()));
+}
+
 //основная менюшка
 SystemTrayMenu::SystemTrayMenu(QWidget* pwgt): QMenu(pwgt)
 {

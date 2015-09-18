@@ -139,6 +139,8 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     //связка next & previous
     QObject::connect(menu->getNextAction(), SIGNAL(triggered(bool)), this, SLOT(slotNextSong()));
     QObject::connect(menu->getPreviousAction(), SIGNAL(triggered(bool)), this, SLOT(slotPreviousSong()));
+    //дизайн
+    QObject::connect(menu, SIGNAL(triggered(QAction*)), this , SLOT(slotDesignChange(QAction*)));
 
     //установить переводчки
     qApp->installTranslator(appTrans);
@@ -507,7 +509,41 @@ void SoundPlayer::slotMenuActivated(QAction* action)
 //отработка смены дизайна
 void SoundPlayer::slotDesignChange(QAction* action)
 {
+    if (action->objectName() == "Magic") {
+        //файлик css
+        styleCSS->setFileName("");
+        styleCSS->open(QFile::ReadOnly);
+        //применить стиль
+        this->setStyleSheet(QString(styleCSS->readAll()));
+        menu->designFusionMenu();
+        dlg->designFusion();
+        hiddenMenu->designFusion();
+        //запуск стиля Fusion
+        qApp->setStyle("Fusion");
+    }
 
+    if (action->objectName() == "Default") {
+        //файлик css
+        styleCSS->setFileName(":/appStyle.css");
+        styleCSS->open(QFile::ReadOnly);
+        //применить стиль
+        menu->designDefaultMenu();
+        dlg->designDefault();
+        hiddenMenu->designDefault();
+        this->setStyleSheet(QString(styleCSS->readAll()));
+    }
+
+    if (action->objectName() == "Windows") {
+        //файлик css
+        styleCSS->setFileName("");
+        styleCSS->open(QFile::ReadOnly);
+        //применить стиль
+        this->setStyleSheet(QString(styleCSS->readAll()));
+        menu->designWindowsMenu();
+        dlg->designWindows();
+        hiddenMenu->designWindows();
+        qApp->setStyle("WindowsVista");
+    }
 }
 
 //смена языка

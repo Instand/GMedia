@@ -39,6 +39,36 @@ void AboutDialog::retranslateAbout()
     this->setWindowTitle(tr("About GMedia"));
 }
 
+//убрать дизайн
+void AboutDialog::designWindows()
+{
+    //дизайн
+    aboutStyleCSS->setFileName("");
+    aboutStyleCSS->open(QFile::ReadOnly);
+    //применить стиль
+    this->setStyleSheet(QString(aboutStyleCSS->readAll()));
+}
+
+//убрать дизайн
+void AboutDialog::designFusion()
+{
+    //дизайн
+    aboutStyleCSS->setFileName("");
+    aboutStyleCSS->open(QFile::ReadOnly);
+    //применить стиль
+    this->setStyleSheet(QString(aboutStyleCSS->readAll()));
+}
+
+//по умолчанию
+void AboutDialog::designDefault()
+{
+    //дизайн
+    aboutStyleCSS->setFileName(":/aboutStyle.css");
+    aboutStyleCSS->open(QFile::ReadOnly);
+    //применить стиль
+    this->setStyleSheet(QString(aboutStyleCSS->readAll()));
+}
+
 //скрытие, показ
 void AboutDialog::slotShowHide()
 {

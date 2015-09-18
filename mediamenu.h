@@ -10,6 +10,9 @@ public:
     virtual ~MediaMenu();
     void retranslateMenu();     //перевод меню на другие языки
     virtual void contextMenuEvent(QContextMenuEvent* me);       //переопределяем для своей реализации всплывающего меню
+    void designWindowsMenu();
+    void designFusionMenu();
+    void designDefaultMenu();
     QAction* getPauseAction() const;
     QAction* getPlayAction() const;
     QAction* getStopAction() const;

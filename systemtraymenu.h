@@ -29,6 +29,9 @@ public:
     void retranslateTrayMenu(); //перевести меню на другой язык
     QAction *getNextSong() const;
     QAction *getPreviousSong() const;
+    void designWindows();
+    void designFusion();
+    void designDefault();
 };
 
 #endif // SYSTEMTRAYMENU_H
