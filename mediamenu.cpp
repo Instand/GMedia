@@ -62,10 +62,14 @@ MediaMenu::~MediaMenu()
 //перевести интерфейс меню
 void MediaMenu::retranslateMenu()
 {
+    //обновляем опции плеера
     mOpen->setText(tr("&Open"));
     playAction->setText(tr("&Play"));
     stopAction->setText(tr("&Stop"));
     pauseAction->setText(tr("&Pause"));
+    nextAction->setText(tr("Next"));
+    previousAction->setText(tr("Previous"));
+    aboutAction->setText(tr("About GMedia"));
     //обновляем подменю Options
     optionMenu->setTitle(tr("Option&s"));
     exitAction->setText(tr("&Exit"));

@@ -42,7 +42,20 @@ QAction *SystemTrayMenu::getActionMessage() const
 //перевод меню
 void SystemTrayMenu::retranslateTrayMenu()
 {
-
+    actionOpen->setText(tr("&Open"));
+    //перевод меню
+    playerMenu->setTitle(tr("Pla&yer menu"));
+    actionPlay->setText(tr("&Play"));
+    actionPause->setText(tr("Pa&use"));
+    actionStop->setText(tr("&Stop"));
+    previousSong->setText(tr("Previous"));
+    nextSong->setText(tr("Next"));
+    //перевод меню
+    advanceMenu->setTitle(tr("Advance"));
+    aboutMenu->setText(tr("About GMedia"));
+    actionMessage->setText(tr("Song Message"));
+    actionShow->setText(tr("Show player"));
+    actionExit->setText(tr("&Exit"));
 }
 
 

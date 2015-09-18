@@ -189,7 +189,12 @@ void SoundPlayer::retranslateGUI()
 {
     if (fileName->text() == tr("None"))
         fileName->setText(tr("None"));
-        repeatCheck->setText(tr("Repeat "));
+    repeatCheck->setText(tr("Repeat "));
+    btnOpen->setText(tr("Open"));           //основная кнопка
+    //перевод основного меню
+    menu->retranslateMenu();
+    //перевод скрытого меню
+    hiddenMenu->retranslateTrayMenu();
 }
 
 //расчет размера песни в Mb
@@ -242,7 +247,7 @@ void SoundPlayer::contextMenuEvent(QContextMenuEvent *me)
 void SoundPlayer::changeEvent(QEvent *pe)
 {
     if (pe->type() == QEvent::LanguageChange) {
-        menu->retranslateMenu();
+        this->retranslateGUI();
         //ToDo перевод основного интерфейса
     } else QWidget::changeEvent(pe);
 }
