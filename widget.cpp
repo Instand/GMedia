@@ -475,7 +475,7 @@ void SoundPlayer::slotMenuActivated(QAction* action)
 {
     int i=0;
     //если открытие, то открываем файлик
-    if ((QString(QObject::tr("Open"))) == action->text().remove("&")) {
+    if (action->objectName() == "Open") {
         QString file = QFileDialog::getOpenFileName(this, "Open File");     //вызов файл диалога
         //если файл все-таки открыт
         if (!file.isEmpty()) {

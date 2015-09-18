@@ -11,6 +11,7 @@ MediaMenu::MediaMenu(QWidget* pwgt):QMenu(pwgt)
 
     //создание в меню открытия
     mOpen = this->addAction(QObject::tr("&Open"));
+    mOpen->setObjectName("Open");
     //разделитель
     this->addSeparator();
     playAction = this->addAction(QObject::tr("&Play"));
