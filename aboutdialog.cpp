@@ -78,9 +78,4 @@ void AboutDialog::slotShowHide()
     } else this->hide();
 }
 
-//ToDo
-void AboutDialog::slotDesignChange(QAction *)
-{
-
-}
 

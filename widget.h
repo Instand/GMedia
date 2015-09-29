@@ -68,6 +68,7 @@ private:
     void nextSong();
     QListWidgetItem* searchItem;
     //функция перехода к обратной песне в списке
+    QIcon icon;
     void previousSong();
     bool checkListItem();   //проверка наличия в листе выбираемой песни
 private slots:

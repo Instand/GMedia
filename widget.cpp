@@ -3,14 +3,16 @@
 extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;     //разрещение
 
 //конструктор медиа
-SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
+SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt), icon(qApp->applicationDirPath() + "/add/ringtones.ico")
 {
     this->setFixedSize(500, 190);        //установим неизменяющийся размер окна плеера
     this->setWindowTitle("GMedia");  //устаноим верхнюю надпись окна
     this->setWindowIcon(QIcon(":/ringtones"));
     showTime=false;
     changer = false;    //по умолчанию скрыт
-    qt_ntfs_permission_lookup++;                //look up
+
+    qt_ntfs_permission_lookup++;                //разрешение для NTFC жеских дисков
+
     //установить стиль программы
     //файлик css
     styleCSS = new QFile(":/appStyle.css");
@@ -155,7 +157,7 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt)
     //сворачивание
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setContextMenu(hiddenMenu);
-    trayIcon->setIcon(QIcon(":/ringtones"));
+    trayIcon->setIcon(icon);
     //связать слот Показа виджета
     QObject::connect(hiddenMenu->getActionShow(), SIGNAL(triggered(bool)), this, SLOT(slotHideShow()));
     //связать нижнее меню
@@ -217,7 +219,7 @@ void SoundPlayer::dragEnterEvent(QDragEnterEvent* pe)
 //если разрешено перетаскивание
 void SoundPlayer::dropEvent(QDropEvent* pe)
 {
-    QString str = pe->mimeData()->text();
+    QString str = pe->mimeData()->text().remove("file:///");
     fileInfo->setFile(str); //файл для информации
     player->setMedia(QUrl::fromLocalFile(str)); //загружаем из перетаскиваемого файла путь
     player->play();
@@ -233,7 +235,7 @@ void SoundPlayer::dropEvent(QDropEvent* pe)
     //если нет в списке, то добавляем
     if (checkListItem()) {
         listSong = new QListWidgetItem(fileInfo->filePath(), songList);
-        listSong->setIcon(QIcon(":/ringtones"));
+        listSong->setIcon(icon);
         listSong->setSelected(true);
     } else fileName->setText(QObject::tr("File currently in song list"));
 }
@@ -389,7 +391,7 @@ void SoundPlayer::slotOpen()
 
             if (checkListItem()) {
                 listSong = new QListWidgetItem(fileInfo->filePath(), songList);
-                listSong->setIcon(QIcon(":/ringtones"));
+                listSong->setIcon(icon);
                 listSong->setSelected(true);
             } else fileName->setText(QObject::tr("File currently in song list"));
 
@@ -495,7 +497,7 @@ void SoundPlayer::slotMenuActivated(QAction* action)
              //проверка наличия в листе файла
              if (checkListItem()) {
                  listSong = new QListWidgetItem(fileInfo->filePath(), songList);
-                 listSong->setIcon(QIcon(":/ringtones"));
+                 listSong->setIcon(icon);
                  listSong->setSelected(true);
              } else fileName->setText(QObject::tr("File currently in song list"));
                 //начать воспроизведение файла сразу

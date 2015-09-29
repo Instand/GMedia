@@ -21,7 +21,6 @@ public:
     void designDefault();
 public slots:
     void slotShowHide();            //слот показа/скрытия окна
-    void slotDesignChange(QAction* );   //слот смены дизайна
 };
 
 
