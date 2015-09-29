@@ -94,6 +94,9 @@ private slots:
     //отработка переключений в системном трее
     void slotNextSong();
     void slotPreviousSong();
+    //реагирование на двойной клик по SystemTray
+    void slotSystemTrayDClick(QSystemTrayIcon::ActivationReason reason);
+
 };
 
 #endif // WIDGET_H

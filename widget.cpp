@@ -3,7 +3,7 @@
 extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;     //разрещение
 
 //конструктор медиа
-SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt), icon(qApp->applicationDirPath() + "/add/ringtones.ico")
+SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt), icon(":/ringtones")
 {
     this->setFixedSize(500, 190);        //установим неизменяющийся размер окна плеера
     this->setWindowTitle("GMedia");  //устаноим верхнюю надпись окна
@@ -174,6 +174,9 @@ SoundPlayer::SoundPlayer(QWidget *pwgt): QWidget(pwgt), icon(qApp->applicationDi
     //дополнительная обработка переключений треков
     QObject::connect(hiddenMenu->getNextSong(), SIGNAL(triggered(bool)), this, SLOT(slotNextSong()));
     QObject::connect(hiddenMenu->getPreviousSong(), SIGNAL(triggered(bool)), this, SLOT(slotPreviousSong()));
+
+    //соединим активацию трея
+    QObject::connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(slotSystemTrayDClick(QSystemTrayIcon::ActivationReason)));
 }
 
 //чистка памяти
@@ -627,12 +630,23 @@ void SoundPlayer::slotStartListSong(QListWidgetItem* item)
     songSize->setText(calculateSongSize(fileInfo->size()));     //размер
 }
 
+//слот для проигрывания следующей песни
 void SoundPlayer::slotNextSong()
 {
     nextSong();
 }
 
+//слот для проигрывания предыдущей песни
 void SoundPlayer::slotPreviousSong()
 {
     previousSong();
+}
+
+//реакция на двойной клик по системному трею
+void SoundPlayer::slotSystemTrayDClick(QSystemTrayIcon::ActivationReason reason)
+{
+    if (reason == QSystemTrayIcon::DoubleClick) {
+        trayIcon->hide();
+        this->show();
+    }
 }
