@@ -11,11 +11,13 @@
 //основной класс мультимедийного плеера
 class SoundPlayer: public QWidget {
     Q_OBJECT
+
 public:
     SoundPlayer(QWidget* pwgt=0);
     virtual ~SoundPlayer();
     void retranslateGUI();
     QString calculateSongSize(qint64 songSize);
+
 protected:
     QMediaPlayer* player;   //основной плеер
     QVBoxLayout* vbox;
@@ -29,6 +31,7 @@ protected:
     virtual void closeEvent(QCloseEvent* ce);
     //событие нажатия кнопки
     virtual void keyPressEvent(QKeyEvent* ke);
+
 private:
     QPushButton* btnPlay;
     QPushButton* btnStop;
@@ -72,6 +75,7 @@ private:
     QIcon icon;
     void previousSong();
     bool checkListItem();   //проверка наличия в листе выбираемой песни
+
 private slots:
     void slotOpen();        //открытие окна файлов
     void slotPlay();
@@ -99,7 +103,6 @@ private slots:
     void slotSystemTrayDClick(QSystemTrayIcon::ActivationReason reason);
     //таймерный слот активации
     void slotTimerShow();
-
 };
 
 #endif // WIDGET_H

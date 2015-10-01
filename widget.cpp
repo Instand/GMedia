@@ -273,12 +273,20 @@ void SoundPlayer::closeEvent(QCloseEvent *ce)
 //событие нажатия кнопки
 void SoundPlayer::keyPressEvent(QKeyEvent *ke)
 {
+    //поиск выделенного элемента
     if (ke->key()==Qt::Key_Delete && songList->selectedItems().back()->isSelected()) {
         QListWidgetItem* item = songList->selectedItems().back();
+        QString tempStr = item->text();
         delete item;    //удаляем песню из списка
-        player->stop();
-        fileName->clear();
-        trayIcon->setToolTip("");
+
+        //алгоритм чистки информации и проверки на удаление проигрываемой песни
+        QString str = player->currentMedia().canonicalUrl().toString().remove("file:///");
+        if (str == tempStr) {
+            player->stop();
+            fileName->clear();
+            trayIcon->setToolTip("");
+            songSize->clear();
+        }
     }
 }
 
