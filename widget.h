@@ -3,6 +3,7 @@
 
 #include <QtWidgets>
 #include <QMediaPlayer>
+#include <windows.h>
 #include "mediamenu.h"
 #include "aboutdialog.h"
 #include "systemtraymenu.h"
@@ -96,6 +97,8 @@ private slots:
     void slotPreviousSong();
     //реагирование на двойной клик по SystemTray
     void slotSystemTrayDClick(QSystemTrayIcon::ActivationReason reason);
+    //таймерный слот активации
+    void slotTimerShow();
 
 };
 

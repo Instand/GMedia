@@ -646,7 +646,14 @@ void SoundPlayer::slotPreviousSong()
 void SoundPlayer::slotSystemTrayDClick(QSystemTrayIcon::ActivationReason reason)
 {
     if (reason == QSystemTrayIcon::DoubleClick) {
-        trayIcon->hide();
-        this->show();
+        //не вызывать следующее окно в трее
+        QTimer::singleShot(100, this, SLOT(slotTimerShow()));
     }
+}
+
+//таймерный слот активации
+void SoundPlayer::slotTimerShow()
+{
+    trayIcon->hide();
+    this->show();
 }
