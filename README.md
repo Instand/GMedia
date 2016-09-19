@@ -3,4 +3,4 @@ MediaPlayer based on QMediaPlayer
 
 Screenshot below
 
-![Alt text](http://img.chaos-online.ru/WWu "GMEdia")
+![Alt text](http://img.chaos-online.ru/WWF "GMEdia")
